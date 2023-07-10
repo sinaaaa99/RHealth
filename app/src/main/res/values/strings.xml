@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">ReHealth</string>
+    <string name="title_activity_medicine">medicineActivity</string>
+</resources>
