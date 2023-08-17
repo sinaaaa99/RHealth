@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.rehealth.R
 import com.example.rehealth.ui.theme.blue10
 import com.example.rehealth.ui.theme.cardColor
@@ -39,7 +40,7 @@ import com.example.rehealth.ui.theme.visitSettingBack
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingScreen() {
+fun SettingScreen(navHostController: NavHostController) {
 
     val scrollable = rememberScrollState()
 
@@ -169,14 +170,20 @@ fun SettingScreen() {
                         title = "ویزیت",
                         bacColor = visitSettingBack,
                         height = 200.dp
-                    )
+                    ){
+
+                        navHostController.navigate("VisitOption_Screen")
+
+                    }
 
                     SettingItems(
                         image = R.drawable.pic_test_set,
                         title = "آزمایش",
                         bacColor = testSettingBack,
                         height = 250.dp
-                    )
+                    ){
+
+                    }
 
                 }
 
@@ -187,14 +194,20 @@ fun SettingScreen() {
                         title = "دارو",
                         bacColor = drugSettingBack,
                         height = 250.dp
-                    )
+                    ){
+
+                        navHostController.navigate("DrugOption_Screen")
+
+                    }
 
                     SettingItems(
                         image = R.drawable.pic_quiz,
                         title = "پرسشنامه",
                         bacColor = quizSettingBack,
                         height = 200.dp
-                    )
+                    ){
+
+                    }
 
                 }
             }

@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import com.example.rehealth.data.models.DrugReminder
 import com.example.rehealth.data.models.MedicineWithSideEffects
 import com.example.rehealth.data.models.Medicines
 import com.example.rehealth.data.models.SideEffects
@@ -25,4 +26,14 @@ interface MedicineDao {
     @Transaction
     @Query("select * from medicines order by medicineId ASC")
     fun getMedicineWithSide(): Flow<List<MedicineWithSideEffects>>
+
+
+    //Drug Reminder
+    //Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertDrugReminder(drugReminder: DrugReminder)
+
+    //read
+    @Query("select * from Drug_Reminder order by id ASC")
+    fun getAllDrugReminder():Flow<List<DrugReminder>>
 }

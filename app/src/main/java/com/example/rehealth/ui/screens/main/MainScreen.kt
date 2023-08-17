@@ -8,13 +8,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
+import com.example.rehealth.data.interfaces.AlarmScheduler
+import com.example.rehealth.data.interfaces.DrugScheduler
 import com.example.rehealth.navigation.main.MainNavGraph
 import com.example.rehealth.ui.screens.main.bottombar.CustomBottomBar
 import com.example.rehealth.ui.viewmodel.SharedViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(sharedViewModel: SharedViewModel) {
+fun MainScreen(sharedViewModel: SharedViewModel, alarmSchedule: AlarmScheduler,drugScheduler: DrugScheduler) {
 
     val navHostController = rememberNavController()
 
@@ -32,7 +34,7 @@ fun MainScreen(sharedViewModel: SharedViewModel) {
                 .padding(it)
         ) {
 
-            MainNavGraph(navHostController = navHostController, sharedViewModel = sharedViewModel)
+            MainNavGraph(navHostController, sharedViewModel, alarmSchedule,drugScheduler)
         }
 
     }

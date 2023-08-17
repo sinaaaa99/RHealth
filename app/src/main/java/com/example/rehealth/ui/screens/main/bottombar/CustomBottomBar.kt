@@ -40,67 +40,70 @@ fun CustomBottomBar(navHostController: NavHostController) {
     val currentDestination = navBackStackEntry?.destination
 
 
+    val bottomDestination = screensItem.any { it.route == currentDestination?.route }
 
+    if (bottomDestination) {
 
-    Row(
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.background),
-        verticalAlignment = CenterVertically,
-        horizontalArrangement = SpaceBetween,
-    ) {
+        Row(
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth()
+                .background(color = MaterialTheme.colorScheme.background),
+            verticalAlignment = CenterVertically,
+            horizontalArrangement = SpaceBetween,
+        ) {
 
-        screensItem.forEach { screensItem ->
+            screensItem.forEach { screensItem ->
 
-            val selected = currentDestination?.hierarchy?.any {
-                it.route == screensItem.route
-            } == true
+                val selected = currentDestination?.hierarchy?.any {
+                    it.route == screensItem.route
+                } == true
 
-            val backgroundColor =
-                if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.background
+                val backgroundColor =
+                    if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.background
 
-            val contentColor = if (selected) Color.White else Color.Black
+                val contentColor = if (selected) Color.White else Color.Black
 
-            Box(modifier = Modifier
-                .height(40.dp)
-                .clip(CircleShape)
-                .background(backgroundColor)
-                .clickable {
+                Box(modifier = Modifier
+                    .height(40.dp)
+                    .clip(CircleShape)
+                    .background(backgroundColor)
+                    .clickable {
 
-                    navHostController.navigate(screensItem.route) {
-                        popUpTo(navHostController.graph.startDestinationId) {
-                            saveState = true
+                        navHostController.navigate(screensItem.route) {
+                            popUpTo(navHostController.graph.startDestinationId) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
                         }
-                        launchSingleTop = true
-                        restoreState = true
+                    }) {
+
+                    Row(
+                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 10.dp),
+                        verticalAlignment = CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+
+                        Icon(
+                            painter = painterResource(id = if (selected) screensItem.selectedIcon else screensItem.icon),
+                            contentDescription = "bottom nav icon",
+                            tint = contentColor
+                        )
+
+                        AnimatedVisibility(visible = selected) {
+
+                            Text(text = screensItem.title, color = contentColor)
+                        }
+
                     }
-                }) {
-
-                Row(
-                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 10.dp),
-                    verticalAlignment = CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-
-                    Icon(
-                        painter = painterResource(id = if (selected) screensItem.selectedIcon else screensItem.icon),
-                        contentDescription = "bottom nav icon",
-                        tint = contentColor
-                    )
-
-                    AnimatedVisibility(visible = selected) {
-
-                        Text(text = screensItem.title, color = contentColor)
-                    }
-
                 }
+
+
             }
 
 
         }
-
-
     }
 
 }

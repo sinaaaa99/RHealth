@@ -1,32 +1,44 @@
 package com.example.rehealth.navigation.main
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.navigation
-import com.example.rehealth.ui.screens.main.home.HomeScreen
-import com.example.rehealth.ui.screens.main.medicine.MedicineScreen
-import com.example.rehealth.ui.screens.main.setting.SettingScreen
+import com.example.rehealth.data.interfaces.AlarmScheduler
+import com.example.rehealth.data.interfaces.DrugScheduler
+import com.example.rehealth.navigation.NavigateBetweenScreens
+import com.example.rehealth.navigation.bottombar.bottomBarNavGraph
+import com.example.rehealth.navigation.main.home.homeNavGraph
+import com.example.rehealth.navigation.medicine.medicineNavGraph
+import com.example.rehealth.navigation.setting.settingNavGraph
 import com.example.rehealth.ui.viewmodel.SharedViewModel
 
 @Composable
-fun MainNavGraph(navHostController: NavHostController,sharedViewModel: SharedViewModel) {
+fun MainNavGraph(
+    navHostController: NavHostController,
+    sharedViewModel: SharedViewModel,
+    alarmSchedule: AlarmScheduler,
+    drugScheduler: DrugScheduler
+) {
 
-    NavHost(navController = navHostController, startDestination = ScreensNavItem.Home.route) {
+    val navBetScreens = remember(navHostController) {
+        NavigateBetweenScreens(navHostController)
+    }
+    NavHost(
+        navController = navHostController,
+        startDestination = "BottomBar_Route",
+        route = "Main_Route"
+    ) {
 
-        composable(ScreensNavItem.Setting.route) {
+        bottomBarNavGraph(navHostController, sharedViewModel)
 
-            SettingScreen()
-        }
-        composable(ScreensNavItem.Home.route) {
+        homeNavGraph(navHostController)
 
-            HomeScreen()
-        }
-        composable(ScreensNavItem.Medicine.route) {
 
-            MedicineScreen(sharedViewModel)
-        }
+        medicineNavGraph(navHostController, sharedViewModel)
+
+
+        settingNavGraph(navHostController, alarmSchedule, drugScheduler, navBetScreens.addDrug)
 
     }
 }

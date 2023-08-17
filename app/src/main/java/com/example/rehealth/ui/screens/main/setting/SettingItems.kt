@@ -2,6 +2,7 @@ package com.example.rehealth.ui.screens.main.setting
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,7 +27,8 @@ fun SettingItems(
     image: Int,
     title: String,
     bacColor: Color,
-    height: Dp
+    height: Dp,
+    onItemClick: () -> Unit
 ) {
 
     Box(
@@ -35,6 +37,10 @@ fun SettingItems(
             .height(height)
             .clip(RoundedCornerShape(32.dp))
             .background(color = bacColor)
+            .clickable {
+
+                onItemClick()
+            }
     ) {
 
         Column {
@@ -53,7 +59,10 @@ fun SettingItems(
                 )
             }
 
-            Column(modifier = Modifier.weight(4f), horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(
+                modifier = Modifier.weight(4f),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
 
                 Text(
                     modifier = Modifier

@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.rehealth"
-        minSdk 24
+        minSdk 26
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -29,8 +29,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+
+        coreLibraryDesugaringEnabled true
+
+        sourceCompatibility JavaVersion.VERSION_1_9
+        targetCompatibility JavaVersion.VERSION_1_9
     }
     kotlinOptions {
         jvmTarget = '1.8'
@@ -95,7 +98,22 @@ dependencies {
     implementation("com.exyte:animated-navigation-bar:1.0.0")
 
     //lottie
-    implementation "com.airbnb.android:lottie-compose:6.0.0"
+    implementation "com.airbnb.android:lottie-compose:6.0.1"
+
+
+    //time picker
+    def calender_ver="1.0.2"
+    implementation "com.maxkeppeler.sheets-compose-dialogs:core:$calender_ver"
+    // CALENDAR
+    implementation "com.maxkeppeler.sheets-compose-dialogs:calendar:$calender_ver"
+    // CLOCK
+    implementation "com.maxkeppeler.sheets-compose-dialogs:clock:$calender_ver"
+
+    //time
+//    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.1'
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.2.2")
+
+
 
 
 }

@@ -1,7 +1,10 @@
 package com.example.rehealth.ui.viewmodel
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.rehealth.data.models.DrugReminder
 import com.example.rehealth.data.models.MedicineWithSideEffects
 import com.example.rehealth.data.models.Medicines
 import com.example.rehealth.data.prepopulate.PrepopulateMedicine
@@ -12,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 import javax.inject.Inject
 import kotlin.Exception
 
@@ -38,7 +42,7 @@ class SharedViewModel @Inject constructor(private val repository: RHRepository) 
     }
 
 
-    //reading All data
+    //reading All medicine  data
     private val _allData = MutableStateFlow<RequestState<List<Medicines>>>(RequestState.Idle)
     val allData: StateFlow<RequestState<List<Medicines>>> = _allData
 
@@ -93,11 +97,59 @@ class SharedViewModel @Inject constructor(private val repository: RHRepository) 
         }
     }
 
+    //Insert drug Reminder
+
+    val drugId: MutableState<Int> = mutableStateOf(0)
+    val drugTitle: MutableState<String> = mutableStateOf("")
+    val drugDooz: MutableState<String> = mutableStateOf("")
+    val timeReminder1: MutableState<LocalDateTime> = mutableStateOf(LocalDateTime.now())
+    private fun insertDrugReminder() {
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+            val drugReminder = DrugReminder(
+                drugId.value,
+                drugTitle.value,
+                drugDooz.value,
+                timeReminder1.value
+            )
+
+            repository.insertDrugReminder(drugReminder)
+        }
+    }
+
+    //reading Drug Reminder
+    private val _allDrugs = MutableStateFlow<RequestState<List<DrugReminder>>>(RequestState.Idle)
+    val allDrugs: StateFlow<RequestState<List<DrugReminder>>> = _allDrugs
+
+    private fun readAllDrugsReminder() {
+
+        _allDrugs.value = RequestState.Loading
+
+        try {
+            viewModelScope.launch {
+
+                repository.getAllDrugReminder.collect { drugsReminder ->
+
+                    _allDrugs.value = RequestState.Success(drugsReminder)
+
+
+                }
+            }
+        } catch (e: Exception) {
+
+            _allDrugs.value = RequestState.Error(e)
+
+        }
+    }
+
     init {
 
         prePopulateDataInDB()
         getAllData()
         getMedicineWithSideEffects()
+
+        readAllDrugsReminder()
     }
 
 

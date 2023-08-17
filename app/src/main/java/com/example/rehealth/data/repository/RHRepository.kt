@@ -1,6 +1,7 @@
 package com.example.rehealth.data.repository
 
 import com.example.rehealth.data.MedicineDao
+import com.example.rehealth.data.models.DrugReminder
 import com.example.rehealth.data.models.MedicineWithSideEffects
 import com.example.rehealth.data.models.Medicines
 import com.example.rehealth.data.models.SideEffects
@@ -21,4 +22,11 @@ class RHRepository @Inject constructor(private val medicineDao: MedicineDao) {
 
     suspend fun insertSideEffects(sideEffects: SideEffects) =
         medicineDao.insertSideEffects(sideEffects)
+
+    //insert Drug Reminder
+    suspend fun insertDrugReminder(drugReminder: DrugReminder) =
+        medicineDao.insertDrugReminder(drugReminder)
+
+    //Read Drug Reminder
+    val getAllDrugReminder: Flow<List<DrugReminder>> = medicineDao.getAllDrugReminder()
 }

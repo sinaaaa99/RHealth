@@ -32,3 +32,8 @@ val quizSettingBack = Color(0xFFDBEBE8)
 
 val cardColor = Color(0xFFEDE9F2)
 
+val yellow10 = Color(0xFFD6D58E)
+
+val buttonColor = Color(0xFFF29472)
+
+
