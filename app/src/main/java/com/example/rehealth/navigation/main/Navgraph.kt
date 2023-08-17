@@ -38,7 +38,7 @@ fun MainNavGraph(
         medicineNavGraph(navHostController, sharedViewModel)
 
 
-        settingNavGraph(navHostController, alarmSchedule, drugScheduler, navBetScreens.addDrug)
+        settingNavGraph(navHostController, sharedViewModel,alarmSchedule, drugScheduler, navBetScreens.addDrug)
 
     }
 }
