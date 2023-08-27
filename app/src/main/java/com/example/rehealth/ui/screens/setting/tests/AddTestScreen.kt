@@ -1,5 +1,4 @@
-package com.example.rehealth.ui.screens.setting
-
+package com.example.rehealth.ui.screens.setting.tests
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -48,13 +47,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.rehealth.R
-import com.example.rehealth.data.interfaces.AlarmScheduler
-import com.example.rehealth.data.models.VisitReminder
+import com.example.rehealth.data.interfaces.TestScheduler
+import com.example.rehealth.data.models.TestReminder
 import com.example.rehealth.ui.theme.buttonColor
 import com.example.rehealth.ui.theme.yellow10
+import com.example.rehealth.ui.viewmodel.SharedViewModel
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
@@ -63,26 +63,16 @@ import com.maxkeppeler.sheets.clock.ClockDialog
 import com.maxkeppeler.sheets.clock.models.ClockConfig
 import com.maxkeppeler.sheets.clock.models.ClockSelection
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VisitOption(alarmSchedule: AlarmScheduler) {
-
-    //alarm
-    var visitReminder: VisitReminder?
-
-    val scrollable = rememberScrollState()
-
-    var doctorName by remember {
-        mutableStateOf("")
-    }
-
-    var alarmCheek by remember {
-        mutableStateOf(true)
-    }
-
+fun AddTestScreen(
+    testScheduler: TestScheduler,
+    sharedViewModel: SharedViewModel,
+    navController: NavHostController
+) {
 
     //calendar creator
     val calenderState = rememberSheetState()
@@ -101,24 +91,36 @@ fun VisitOption(alarmSchedule: AlarmScheduler) {
         selection = CalendarSelection.Date { date ->
             selectedDate = date
 
-            Log.d("calenderTime", selectedDate.toString())
+//            Log.d("calenderTime", selectedDate.toString())
         })
 
     //clock creator
     val clockState = rememberSheetState()
-    var selectedTime by remember {
-        mutableStateOf<LocalTime>(LocalTime.now())
-    }
+    val selectedTime by sharedViewModel.testTimeReminder
 
     ClockDialog(
         state = clockState,
         config = ClockConfig(is24HourFormat = true),
         selection = ClockSelection.HoursMinutes { h, m ->
-            selectedTime = LocalTime.of(h, m)
+
+            sharedViewModel.testTimeReminder.value =
+                LocalTime.of(h, m).atDate(selectedDate)
+
+
         })
 
+    var alarmCheek by remember {
+        mutableStateOf(true)
+    }
 
+    val scrollable = rememberScrollState()
 
+    val testName by sharedViewModel.testName
+
+    var testReminder: TestReminder?
+
+    val testId by sharedViewModel.testId
+    val alarmId by sharedViewModel.alarmIdTest
 
     Column(
         Modifier
@@ -132,6 +134,9 @@ fun VisitOption(alarmSchedule: AlarmScheduler) {
                 .clip(CircleShape)
                 .background(color = yellow10)
                 .padding(10.dp)
+                .clickable {
+                    navController.popBackStack()
+                }
         ) {
 
             Row {
@@ -149,7 +154,7 @@ fun VisitOption(alarmSchedule: AlarmScheduler) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(10.dp),
-            text = "ایجاد ویزیت جدید",
+            text = "ایجاد آزمایش جدید",
             style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Right,
             fontWeight = FontWeight.Bold
         )
@@ -172,20 +177,20 @@ fun VisitOption(alarmSchedule: AlarmScheduler) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp),
-                    text = "نام پزشک",
+                    text = "نام آزمایش",
                     style = MaterialTheme.typography.titleLarge,
                     textAlign = TextAlign.Right
                 )
 
                 OutlinedTextField(
-                    value = doctorName,
-                    onValueChange = { doctorName = it },
+                    value = testName,
+                    onValueChange = { sharedViewModel.testName.value = it },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp),
                     placeholder = {
                         Text(
-                            text = "نام پزشک مربوطه را وارد کنید",
+                            text = "نام آزمایش مربوطه را وارد کنید",
                             textAlign = TextAlign.Right,
                             modifier = Modifier.fillMaxWidth(),
                             style = MaterialTheme.typography.labelSmall
@@ -197,7 +202,7 @@ fun VisitOption(alarmSchedule: AlarmScheduler) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                CalenderStyle(selectedDate) {
+                TestCalenderStyle(selectedDate) {
                     calenderState.show()
                 }
 
@@ -205,7 +210,7 @@ fun VisitOption(alarmSchedule: AlarmScheduler) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                ClockStyle(selectedTime) {
+                TestClockStyle(selectedTime) {
                     clockState.show()
                 }
 
@@ -213,25 +218,23 @@ fun VisitOption(alarmSchedule: AlarmScheduler) {
                 Spacer(modifier = Modifier.height(32.dp))
 
 
-                SaveItems(alarmCheek, ({ onCheek ->
+                TestSaveItems(alarmCheek, ({ onCheek ->
                     alarmCheek = onCheek
                 })) {
 
-                    val time = selectedTime.atDate(selectedDate)
-                    val id = (1..100000000).random()
+                    Log.d("alarmIDTEst", alarmId.toString())
 
+                    testReminder = TestReminder(testId, alarmId, testName, selectedTime.minusDays(1))
 
+                    testScheduler.schedule(testReminder!!)
 
-                    Log.d("alarmTimeSet",time.toString())
+                    sharedViewModel.insertTestsReminder()
 
-                    visitReminder = VisitReminder(
-                        id, time,
-                        doctorName, doctorName
-                    )
+                    navController.popBackStack()
 
-
-                    visitReminder?.let(alarmSchedule::schedule)
+//                    testReminder.let { testScheduler::schedule }
                 }
+                Log.d("alarmIDTEst", alarmId.toString())
 
 
             }
@@ -243,7 +246,7 @@ fun VisitOption(alarmSchedule: AlarmScheduler) {
 
 
 @Composable
-fun CalenderStyle(selectedDate: LocalDate, onCalendarClick: () -> Unit) {
+fun TestCalenderStyle(selectedDate: LocalDate, onCalendarClick: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -285,7 +288,7 @@ fun CalenderStyle(selectedDate: LocalDate, onCalendarClick: () -> Unit) {
 }
 
 @Composable
-fun ClockStyle(selectedTime: LocalTime, onClockClick: () -> Unit) {
+fun TestClockStyle(selectedTime: LocalDateTime, onClockClick: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -376,7 +379,7 @@ fun ClockStyle(selectedTime: LocalTime, onClockClick: () -> Unit) {
 }
 
 @Composable
-fun SaveItems(alarmCheek: Boolean, onAlarmClick: (Boolean) -> Unit, onSaveClick: () -> Unit) {
+fun TestSaveItems(alarmCheek: Boolean, onAlarmClick: (Boolean) -> Unit, onSaveClick: () -> Unit) {
 
     Row(
         modifier = Modifier
@@ -424,10 +427,4 @@ fun SaveItems(alarmCheek: Boolean, onAlarmClick: (Boolean) -> Unit, onSaveClick:
 
     }
 
-}
-
-@Composable
-@Preview(showBackground = true)
-fun CalenderShow() {
-//    VisitOption()
 }

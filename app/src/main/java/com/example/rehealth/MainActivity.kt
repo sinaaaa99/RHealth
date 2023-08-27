@@ -8,10 +8,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.example.rehealth.data.interfaces.AlarmScheduler
+import com.example.rehealth.data.interfaces.VisitScheduler
 import com.example.rehealth.data.interfaces.DrugScheduler
-import com.example.rehealth.data.prepopulate.AlarmScheduleImpl
+import com.example.rehealth.data.interfaces.TestScheduler
+import com.example.rehealth.data.prepopulate.VisitScheduleImpl
 import com.example.rehealth.data.prepopulate.DrugAlamScheduler
+import com.example.rehealth.data.prepopulate.TestAlarmScheduler
 import com.example.rehealth.ui.screens.main.MainScreen
 import com.example.rehealth.ui.theme.ReHealthTheme
 import com.example.rehealth.ui.viewmodel.SharedViewModel
@@ -24,8 +26,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val alarmSchedule: AlarmScheduler = AlarmScheduleImpl(this)
+        val visitScheduler: VisitScheduler = VisitScheduleImpl(this)
         val drugScheduler: DrugScheduler = DrugAlamScheduler(this)
+        val testScheduler: TestScheduler = TestAlarmScheduler(this)
 
         setContent {
             ReHealthTheme {
@@ -34,7 +37,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainScreen(sharedViewModel, alarmSchedule, drugScheduler)
+                    MainScreen(sharedViewModel, visitScheduler, drugScheduler, testScheduler)
                 }
             }
         }

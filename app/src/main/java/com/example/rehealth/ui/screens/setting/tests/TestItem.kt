@@ -1,4 +1,4 @@
-package com.example.rehealth.ui.screens.setting.drugs
+package com.example.rehealth.ui.screens.setting.tests
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -17,22 +17,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.rehealth.R
 
 @Composable
-fun DrugItem(shiftCode: Int, onTrashClick: () -> Unit) {
-
-    val title = when (shiftCode) {
-        1 -> "نوبت صبح"
-        2 -> "نوبت ظهر"
-        3 -> "نوبت عصر"
-        4 -> "نوبت شب"
-        else -> "نوبتی انتخاب نشده"
-
-
-    }
+fun TestItem(title: String, onTrashClick: () -> Unit) {
 
     Card(
         modifier = Modifier
@@ -53,7 +42,7 @@ fun DrugItem(shiftCode: Int, onTrashClick: () -> Unit) {
                 Image(
                     modifier = Modifier
                         .size(35.dp)
-                        .clickable { onTrashClick()},
+                        .clickable { onTrashClick() },
                     painter = painterResource(id = R.drawable.ic_recyclerbin),
                     contentDescription = "Recycler bin icon"
                 )
@@ -73,19 +62,11 @@ fun DrugItem(shiftCode: Int, onTrashClick: () -> Unit) {
             }
 
             Image(
-                painter = painterResource(id = R.drawable.ic_pills),
+                painter = painterResource(id = R.drawable.ic_test),
                 contentDescription = "pills item image"
             )
 
 
         }
     }
-
-}
-
-@Composable
-@Preview
-fun DrugItemShow() {
-
-//    DrugItem("")
 }

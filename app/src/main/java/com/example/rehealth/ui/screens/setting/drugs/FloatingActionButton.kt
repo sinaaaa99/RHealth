@@ -7,7 +7,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 
 @Composable
-fun FloatingActionButtonDrug(
+fun FloatingActionButton(
     onFABClick: (Int) -> Unit
 ) {
 

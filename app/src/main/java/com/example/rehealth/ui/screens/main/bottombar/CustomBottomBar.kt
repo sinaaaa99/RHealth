@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -27,6 +28,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.rehealth.navigation.main.ScreensNavItem
+import com.example.rehealth.ui.theme.bottomBar_Dark
 
 @Composable
 fun CustomBottomBar(navHostController: NavHostController) {
@@ -45,10 +47,10 @@ fun CustomBottomBar(navHostController: NavHostController) {
     if (bottomDestination) {
 
         Row(
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth()
-                .background(color = MaterialTheme.colorScheme.background),
+            modifier = Modifier.shadow(elevation = 10.dp)
+                .background(color = bottomBar_Dark)
+                .padding(4.dp)
+                .fillMaxWidth(),
             verticalAlignment = CenterVertically,
             horizontalArrangement = SpaceBetween,
         ) {
@@ -60,7 +62,7 @@ fun CustomBottomBar(navHostController: NavHostController) {
                 } == true
 
                 val backgroundColor =
-                    if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.background
+                    if (selected) MaterialTheme.colorScheme.tertiary else bottomBar_Dark
 
                 val contentColor = if (selected) Color.White else Color.Black
 

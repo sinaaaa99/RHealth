@@ -5,11 +5,12 @@ import androidx.room.PrimaryKey
 import java.time.LocalDateTime
 import java.util.UUID
 
-@Entity
-data class VisitReminder(
+@Entity("TestReminder")
+data class TestReminder(
     @PrimaryKey
-    val visitId:UUID,
+    val testId:UUID,
     val alarmId:Int,
-    val title:String,
-    val time: LocalDateTime
+    val name:String,
+    val time:LocalDateTime
+
 )

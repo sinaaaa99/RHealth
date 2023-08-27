@@ -17,20 +17,26 @@ class ReHealthApplication : Application() {
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        val channel1 = NotificationChannel(
+        val visitChannel = NotificationChannel(
             CHANNEL_ID,
             CHANNEL_NAME,
             NotificationManager.IMPORTANCE_HIGH
         )
 
-        val channel2 = NotificationChannel(
+        val drugChannel = NotificationChannel(
             "Drug",
             "Drug",
             NotificationManager.IMPORTANCE_HIGH
         )
 
+        val testChannel = NotificationChannel(
+            "TestsId",
+            "Test",
+            NotificationManager.IMPORTANCE_HIGH
+        )
 
-        val channels = mutableListOf(channel1,channel2)
+
+        val channels = mutableListOf(visitChannel,drugChannel,testChannel)
 //        notificationManager.createNotificationChannel(channel)
         notificationManager.createNotificationChannels(channels)
     }

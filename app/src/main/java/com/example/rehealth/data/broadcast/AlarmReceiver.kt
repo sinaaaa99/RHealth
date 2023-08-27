@@ -18,7 +18,6 @@ class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
 
         val title = intent.getStringExtra(NOTIF_TITLE)
-        val description = intent.getStringExtra(NOTIF_DESCRIPTION)
         val id = intent.getIntExtra(NOTIF_ID, (1..9999).random())
 
         context.let { ctx ->
@@ -29,7 +28,7 @@ class AlarmReceiver : BroadcastReceiver() {
             val builder = NotificationCompat.Builder(ctx, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_home)
                 .setContentTitle(title)
-                .setContentText("نوبت ویزیت شما فردا")
+                .setContentText("یادآور ویزیت $title")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
 
 

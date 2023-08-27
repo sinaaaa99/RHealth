@@ -17,7 +17,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -31,7 +30,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.rehealth.R
-import com.example.rehealth.ui.theme.blue10
+import com.example.rehealth.navigation.routes.Routes.DrugListScreenRoute
+import com.example.rehealth.navigation.routes.Routes.TestListScreenRoute
+import com.example.rehealth.navigation.routes.Routes.VisitListScreenRoute
 import com.example.rehealth.ui.theme.cardColor
 import com.example.rehealth.ui.theme.drugSettingBack
 import com.example.rehealth.ui.theme.quizSettingBack
@@ -64,7 +65,8 @@ fun SettingScreen(navHostController: NavHostController) {
 
                 Text(
                     text = "سینا ویسی", style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
                     text = "سلام,",
@@ -172,7 +174,7 @@ fun SettingScreen(navHostController: NavHostController) {
                         height = 200.dp
                     ){
 
-                        navHostController.navigate("VisitOption_Screen")
+                        navHostController.navigate(VisitListScreenRoute)
 
                     }
 
@@ -182,6 +184,8 @@ fun SettingScreen(navHostController: NavHostController) {
                         bacColor = testSettingBack,
                         height = 250.dp
                     ){
+
+                        navHostController.navigate(TestListScreenRoute)
 
                     }
 
@@ -196,7 +200,7 @@ fun SettingScreen(navHostController: NavHostController) {
                         height = 250.dp
                     ){
 
-                        navHostController.navigate("DrugOption_Screen")
+                        navHostController.navigate(DrugListScreenRoute)
 
                     }
 

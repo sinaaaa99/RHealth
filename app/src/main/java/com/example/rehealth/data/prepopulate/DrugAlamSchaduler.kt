@@ -17,44 +17,40 @@ class DrugAlamScheduler(
     override fun schedule(drugReminder: DrugReminder) {
 
         val intent = Intent(context, DrugAlarmReceiver::class.java).apply {
-            putExtra("id", drugReminder.id)
+            putExtra("id", drugReminder.alarmId)
             putExtra("name", drugReminder.name)
-            putExtra("dooz", drugReminder.dooz)
-            putExtra("reminder1", drugReminder.reminder1)
-            /*putExtra("reminder2", drugReminder.reminder2)
-            putExtra("reminder3", drugReminder.reminder3)
-            putExtra("reminder4", drugReminder.reminder4)*/
         }
 
-        val alarmTime1 = drugReminder.reminder1.atZone(ZoneId.systemDefault())?.toEpochSecond()
-            ?.times(1000)
+        val alarmTime = drugReminder.reminder.atZone(ZoneId.systemDefault()).toEpochSecond()
+            .times(1000)
 
-        /*val alarmTime2 = drugReminder.reminder2?.atZone(ZoneId.systemDefault())?.toEpochSecond()
-            ?.times(1000)
 
-        val alarmTime3 = drugReminder.reminder3?.atZone(ZoneId.systemDefault())?.toEpochSecond()
-            ?.times(1000)
+        alarmManager.setInexactRepeating(
+            AlarmManager.RTC_WAKEUP,
+            alarmTime,
+            AlarmManager.INTERVAL_DAY,
+            PendingIntent.getBroadcast(
+                context,
+                drugReminder.alarmId,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
 
-        val alarmTime4 = drugReminder.reminder4?.atZone(ZoneId.systemDefault())?.toEpochSecond()
-            ?.times(1000)*/
-
-        if (alarmTime1 != null) {
-            alarmManager.setInexactRepeating(
-                AlarmManager.RTC_WAKEUP,
-                alarmTime1,
-                600000,
-                PendingIntent.getBroadcast(
-                    context,
-                    drugReminder.id,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-
-                )
             )
-        }
+        )
     }
 
     override fun cancel(drugReminder: DrugReminder) {
+
+        alarmManager.cancel(
+            PendingIntent.getBroadcast(
+                context,
+                drugReminder.alarmId,
+                Intent(context, DrugAlarmReceiver::class.java),
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+
+            )
+
+        )
 
     }
 

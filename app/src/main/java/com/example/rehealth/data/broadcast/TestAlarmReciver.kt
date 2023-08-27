@@ -10,25 +10,27 @@ import com.example.rehealth.R
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class DrugAlarmReceiver : BroadcastReceiver() {
+class TestAlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
 
-        val id = intent.getIntExtra("id", 1)
+
         val name = intent.getStringExtra("name")
+        val id = intent.getIntExtra("alarmId", 0)
+
 
         context.let { ctx ->
 
-            val notificationManager =
+            val notificationManger =
                 ctx.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-            val builder = NotificationCompat.Builder(ctx, "Drug")
-                .setSmallIcon(R.drawable.ic_home)
-                .setContentTitle(name)
-                .setContentText("زمان مصرف داروهای $name")
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
+            val builder =
+                NotificationCompat.Builder(ctx, "TestsId")
+                    .setSmallIcon(R.drawable.ic_home)
+                    .setContentTitle(name)
+                    .setContentText("یادآور آزمایش $name")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
 
-            notificationManager.notify(id, builder.build())
-
+            notificationManger.notify(id, builder.build())
 
         }
     }

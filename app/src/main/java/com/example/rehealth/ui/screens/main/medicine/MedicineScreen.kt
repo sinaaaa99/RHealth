@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
@@ -93,7 +94,7 @@ fun MedicineScreen(sharedViewModel: SharedViewModel) {
         Card(
             modifier = Modifier
                 .fillMaxSize()
-                .weight(8f)
+                .weight(8f), shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
         ) {
 
             Column(
@@ -124,7 +125,7 @@ fun MedicineScreen(sharedViewModel: SharedViewModel) {
 
                 LazyColumn {
 
-                    if (allData is RequestState.Success){
+                    if (allData is RequestState.Success) {
 
                         itemsIndexed((allData as RequestState.Success<List<Medicines>>).data) { index, medicine ->
 
@@ -145,7 +146,7 @@ fun MedicineScreen(sharedViewModel: SharedViewModel) {
                             ) {
 
                                 val intent = Intent(context, MedicineActivity::class.java)
-                                intent.putExtra("medicineType", index )
+                                intent.putExtra("medicineType", index)
                                 context.startActivity(intent)
 
                             }
