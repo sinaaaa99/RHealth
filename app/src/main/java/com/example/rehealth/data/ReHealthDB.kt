@@ -10,6 +10,8 @@ import com.example.rehealth.data.models.Medicines
 import com.example.rehealth.data.models.SideEffects
 import com.example.rehealth.data.models.TestReminder
 import com.example.rehealth.data.models.VisitReminder
+import com.example.rehealth.data.models.quiz.QuizClass
+import com.example.rehealth.data.models.quiz.UserAnswer
 
 @Database(
     entities = [
@@ -18,7 +20,9 @@ import com.example.rehealth.data.models.VisitReminder
         DrugReminder::class,
         DrugsClass::class,
         TestReminder::class,
-        VisitReminder::class
+        VisitReminder::class,
+        QuizClass::class,
+        UserAnswer::class
     ],
     version = 1,
     exportSchema = false

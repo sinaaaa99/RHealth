@@ -12,6 +12,8 @@ import com.example.rehealth.data.models.Medicines
 import com.example.rehealth.data.models.SideEffects
 import com.example.rehealth.data.models.TestReminder
 import com.example.rehealth.data.models.VisitReminder
+import com.example.rehealth.data.models.quiz.QuizClass
+import com.example.rehealth.data.models.quiz.UserAnswer
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -72,11 +74,11 @@ interface MedicineDao {
 
     //read Tests Reminder
     @Query("select * from TestReminder")
-    fun getAllTests():Flow<List<TestReminder>>
+    fun getAllTests(): Flow<List<TestReminder>>
 
     //delete one test
     @Query("delete from TestReminder where testId=:testId")
-    suspend fun deleteTest(testId:UUID)
+    suspend fun deleteTest(testId: UUID)
 
 
     //Visit Reminder.......................................
@@ -92,6 +94,20 @@ interface MedicineDao {
     @Query("delete from VisitReminder where visitId=:visitId")
     suspend fun deleteVisitReminder(visitId: UUID)
 
+
+    //Quiz Functions.............................................
+
+    //insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertQuiz(quizClass: QuizClass)
+
+    //read quiz
+    @Query("select * from QuizClass where type=:typeQuiz")
+    fun getQuiz(typeQuiz: Int): Flow<List<QuizClass>>
+
+    //insert User ANSWER
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertUserAnswer(userAnswer: UserAnswer)
 
 
 }

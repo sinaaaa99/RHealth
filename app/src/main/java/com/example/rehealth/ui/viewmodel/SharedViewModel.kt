@@ -10,6 +10,9 @@ import com.example.rehealth.data.models.MedicineWithSideEffects
 import com.example.rehealth.data.models.Medicines
 import com.example.rehealth.data.models.TestReminder
 import com.example.rehealth.data.models.VisitReminder
+import com.example.rehealth.data.models.quiz.QuizClass
+import com.example.rehealth.data.models.quiz.UserAnswer
+import com.example.rehealth.data.prepopulate.InitQuiz
 import com.example.rehealth.data.prepopulate.PrepopulateMedicine
 import com.example.rehealth.data.repository.RHRepository
 import com.example.rehealth.util.RequestState
@@ -17,6 +20,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.util.UUID
@@ -201,6 +205,7 @@ class SharedViewModel @Inject constructor(private val repository: RHRepository) 
     private val _drugs = MutableStateFlow<RequestState<List<DrugsClass>>>(RequestState.Idle)
     val drugs: StateFlow<RequestState<List<DrugsClass>>> = _drugs
 
+
     fun getDrugs() {
 
         _drugs.value = RequestState.Loading
@@ -273,7 +278,7 @@ class SharedViewModel @Inject constructor(private val repository: RHRepository) 
     private val _allTest = MutableStateFlow<RequestState<List<TestReminder>>>(RequestState.Idle)
     val allTest: StateFlow<RequestState<List<TestReminder>>> = _allTest
 
-
+    val testsSize: MutableState<Int> = mutableStateOf(0)
     private fun getAllTests() {
 
         _allTest.value = RequestState.Loading
@@ -283,6 +288,8 @@ class SharedViewModel @Inject constructor(private val repository: RHRepository) 
             repository.getAllTests.collect { listOfTestReminder ->
 
                 _allTest.value = RequestState.Success(listOfTestReminder)
+
+                testsSize.value = listOfTestReminder.size
 
             }
         }
@@ -296,8 +303,6 @@ class SharedViewModel @Inject constructor(private val repository: RHRepository) 
             repository.deleteTest(testId.value)
         }
     }
-
-
 
 
     //Visit Function............................
@@ -341,6 +346,8 @@ class SharedViewModel @Inject constructor(private val repository: RHRepository) 
     val allVisit: StateFlow<RequestState<List<VisitReminder>>> = _allVisit
 
 
+    val visitsSize: MutableState<Int> = mutableStateOf(0)
+
     private fun getAllVisit() {
 
         _allVisit.value = RequestState.Loading
@@ -350,6 +357,8 @@ class SharedViewModel @Inject constructor(private val repository: RHRepository) 
             repository.getAllVisits.collect { listOfVisitReminder ->
 
                 _allVisit.value = RequestState.Success(listOfVisitReminder)
+
+                visitsSize.value = listOfVisitReminder.size
 
             }
         }
@@ -364,6 +373,81 @@ class SharedViewModel @Inject constructor(private val repository: RHRepository) 
         }
     }
 
+
+    //Quiz Functions......................................
+
+    //insert
+    private fun insertQuiz() {
+
+        viewModelScope.launch {
+
+
+            for (quiz in InitQuiz.listOfQuiz) {
+
+                repository.insertQuiz(quiz)
+            }
+
+        }
+    }
+
+    private val _allQuiz = MutableStateFlow<RequestState<List<QuizClass>>>(RequestState.Idle)
+    val allQuiz: StateFlow<RequestState<List<QuizClass>>> = _allQuiz
+
+    val quizType: MutableState<Int> = mutableStateOf(1)
+    var currentQuestion: MutableState<Int> = mutableStateOf(0)
+
+    fun getQuiz() {
+        _allQuiz.value = RequestState.Loading
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+            repository.getQuiz(quizType.value).collect { quizList ->
+
+                _allQuiz.value = RequestState.Success(quizList)
+            }
+        }
+
+    }
+
+    //insert User Answer
+
+    var quizId: MutableState<Int> = mutableStateOf(0)
+    var userAnswerRate: MutableState<Int> = mutableStateOf(0)
+    var userAnswerDate: MutableState<LocalDateTime> = mutableStateOf(LocalDateTime.now())
+    private fun insertUserAnswer() {
+
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+            val userAnswer = UserAnswer(
+                0,
+                quizId.value,
+                userAnswerRate.value,
+                userAnswerDate.value
+            )
+
+            repository.insertUserAnswer(userAnswer)
+
+        }
+
+    }
+
+    fun changeQuestion() {
+
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+
+            insertUserAnswer()
+
+            if (currentQuestion.value < 6){
+
+                currentQuestion.value++
+            }
+
+        }
+
+    }
 
     init {
 
@@ -382,6 +466,14 @@ class SharedViewModel @Inject constructor(private val repository: RHRepository) 
         getAllVisit()
 
 //        getDrugs()
+
+
+        //inset quiz
+
+        InitQuiz.initQuiz()
+        insertQuiz()
+
+
     }
 
 

@@ -8,6 +8,8 @@ import com.example.rehealth.data.models.Medicines
 import com.example.rehealth.data.models.SideEffects
 import com.example.rehealth.data.models.TestReminder
 import com.example.rehealth.data.models.VisitReminder
+import com.example.rehealth.data.models.quiz.QuizClass
+import com.example.rehealth.data.models.quiz.UserAnswer
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
@@ -74,5 +76,16 @@ class RHRepository @Inject constructor(private val medicineDao: MedicineDao) {
 
     //delete one test
     suspend fun deleteVisit(visitId:UUID) = medicineDao.deleteVisitReminder(visitId)
+
+
+    //Quiz Functions...................................
+    //insert
+    suspend fun insertQuiz(quizClass: QuizClass) = medicineDao.insertQuiz(quizClass)
+
+    //read Quiz
+    fun getQuiz(type:Int) = medicineDao.getQuiz(type)
+
+    //insert user Answer
+    suspend fun insertUserAnswer(userAnswer: UserAnswer) = medicineDao.insertUserAnswer(userAnswer)
 
 }

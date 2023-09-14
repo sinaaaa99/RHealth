@@ -34,7 +34,7 @@ fun MainNavGraph(
 
         bottomBarNavGraph(navHostController, sharedViewModel)
 
-        homeNavGraph(navHostController)
+        homeNavGraph(navHostController,sharedViewModel)
 
 
         medicineNavGraph(navHostController, sharedViewModel)

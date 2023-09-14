@@ -213,8 +213,8 @@ fun AddDrugScreen(
                             onDismissRequest = { expandedMenu = false }) {
 
                             DropdownMenuItem(modifier = Modifier.fillMaxWidth(), onClick = {
-                                timeShiftName = "نوبت صبح"
-                                timeShiftCode = 1
+                                sharedViewModel.timeShiftName.value = "نوبت صبح"
+                                sharedViewModel.shiftCode.value = 1
                                 expandedMenu = false
                             }) {
                                 Text(
@@ -226,8 +226,8 @@ fun AddDrugScreen(
 
                             }
                             DropdownMenuItem(onClick = {
-                                timeShiftName = "نوبت ظهر"
-                                timeShiftCode = 2
+                                sharedViewModel.timeShiftName.value = "نوبت ظهر"
+                                sharedViewModel.shiftCode.value = 2
                                 expandedMenu = false
                             }) {
                                 Text(
@@ -239,8 +239,8 @@ fun AddDrugScreen(
 
                             }
                             DropdownMenuItem(onClick = {
-                                timeShiftName = "نوبت عصر"
-                                timeShiftCode = 3
+                                sharedViewModel.timeShiftName.value = "نوبت عصر"
+                                sharedViewModel.shiftCode.value = 3
                                 expandedMenu = false
                             }) {
                                 Text(
@@ -252,8 +252,8 @@ fun AddDrugScreen(
 
                             }
                             DropdownMenuItem(onClick = {
-                                timeShiftName = "نوبت شب"
-                                timeShiftCode = 4
+                                sharedViewModel.timeShiftName.value = "نوبت شب"
+                                sharedViewModel.shiftCode.value = 4
                                 expandedMenu = false
                             }) {
                                 Text(

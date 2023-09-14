@@ -3,6 +3,7 @@ package com.example.rehealth.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+/*
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)
 val Pink80 = Color(0xFFEFB8C8)
@@ -10,16 +11,18 @@ val Pink80 = Color(0xFFEFB8C8)
 val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
+*/
 
 
 val green20 = Color(0xFF9BBF9D)
 val green30 = Color(0xFF8ABFB5)
 val green31 = Color(0xFFa1cbc3)
 val green32 = Color(0xFFb8d8d2)
+val greenCheck = Color(0xFF4CA649)
 val orange20 = Color(0xFFD9A78B)
-val orange80 = Color(0xFFA66249)
+//val orange80 = Color(0xFFA66249)
 val blue30 = Color(0xFFA3C4D9)
-val blue10 = Color(0xFFA3AFBF)
+//val blue10 = Color(0xFFA3AFBF)
 val red50 = Color(0xFFF23005)
 val yellow70 = Color(0xFFD99B29)
 val cream10 = Color(0xFFF2F1DC)
@@ -36,13 +39,29 @@ val cardColor = Color(0xFFEDE9F2)
 val yellow10 = Color(0xFFD6D58E)
 
 val buttonColor = Color(0xFFF29472)
+val buttonColorQuiz = Color(0xFF162440)
 val bottomBar_Dark = Color(0xFF567365)
 
 //menu Items Color
-val menuItemColor1 = Color(0xFFF25C5C)
-val menuItemColor2 = Color(0xFFF29580)
-val menuItemColor3 = Color(0xFFFFCCD5)
-val menuItemColor4 = Color(0xFFF2DEA0)
+val menuItemColor1 = Color(0xFFA691F2)
+val menuItemColor2 = Color(0xFFf291ac)
+val menuItemColor3 = Color(0xFFddf291)
+val menuItemColor4 = Color(0xFF91f2d7)
+
+val menuCardColor = Color(0xFFe4ecad)
+
+
+val drugBackgroundColor = Color(0xFFD5F2E5)
+val drugBoxColor = Color(0xFFD5D7F2)
+val drugItemNumColor = Color(0xFFBBF2D8)
+
+
+
+val quizCardColorA = Color(0xFFD3ACFF)
+val quizIconColorA = Color(0xFFC298EC)
+
+val quizCardColorB = Color(0xFFFDFF94)
+val quizIconColorB = Color(0xFFEBEE87)
 
 //import some color
 val md_theme_light_primary = Color(0xFF006A66)
