@@ -32,7 +32,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="com.example.rehealth.data.broadcast.AlarmReceiver" />
+        <receiver android:name="com.example.rehealth.data.broadcast.VisitAlarmReceiver" />
         <receiver android:name="com.example.rehealth.data.broadcast.DrugAlarmReceiver" />
         <receiver android:name="com.example.rehealth.data.broadcast.TestAlarmReceiver" />
     </application>

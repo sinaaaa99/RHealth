@@ -34,15 +34,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.rehealth.R
-import com.example.rehealth.navigation.routes.Routes.QuestionsScreenRoute
-import com.example.rehealth.ui.theme.green20
-import com.example.rehealth.ui.theme.menuItemColor2
-import com.example.rehealth.ui.theme.menuItemColor4
+import com.example.rehealth.navigation.routes.Routes.QuizHomeScreenRoute
+import com.example.rehealth.ui.theme.drugBackgroundColor
 import com.example.rehealth.ui.theme.quizCardColorA
 import com.example.rehealth.ui.theme.quizCardColorB
 import com.example.rehealth.ui.theme.quizIconColorA
 import com.example.rehealth.ui.theme.quizIconColorB
-import com.example.rehealth.ui.theme.yellow10
 
 @Composable
 fun QuizHomeScreen(navHostController: NavHostController) {
@@ -50,7 +47,7 @@ fun QuizHomeScreen(navHostController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(menuItemColor4)
+            .background(drugBackgroundColor)
     ) {
 
 //        DoneScreen()
@@ -79,17 +76,25 @@ fun QuizHomeScreen(navHostController: NavHostController) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        QuizMenu(cardColor = quizCardColorA, iconColor = quizIconColorA, "سوالات سری اول"){
+        QuizMenu(cardColor = quizCardColorA, iconColor = quizIconColorA, "سوالات سری اول") {
 
             //on click listener
-            navHostController.navigate("QuestionsScreenRoute/1")
+            navHostController.navigate("QuestionsScreenRoute/1") {
+                popUpTo(QuizHomeScreenRoute) {
+                    inclusive = true
+                }
+            }
 
         }
 
-        QuizMenu(cardColor = quizCardColorB, iconColor = quizIconColorB, "سوالات سری دوم"){
+        QuizMenu(cardColor = quizCardColorB, iconColor = quizIconColorB, "سوالات سری دوم") {
 
             //on click listener
-            navHostController.navigate("QuestionsScreenRoute/2")
+            navHostController.navigate("QuestionsScreenRoute/2"){
+                popUpTo(QuizHomeScreenRoute) {
+                    inclusive = true
+                }
+            }
         }
 
 
@@ -125,7 +130,8 @@ fun QuizMenu(cardColor: Color, iconColor: Color, title: String, onArrowClick: ()
                         .clip(RoundedCornerShape(15.dp))
                         .background(
                             Color.White
-                        ).clickable { onArrowClick() }, contentAlignment = Alignment.Center
+                        )
+                        .clickable { onArrowClick() }, contentAlignment = Alignment.Center
                 ) {
 
                     Icon(
@@ -169,7 +175,9 @@ fun QuizMenu(cardColor: Color, iconColor: Color, title: String, onArrowClick: ()
 
 
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(end = 8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.End
                 ) {

@@ -73,7 +73,11 @@ import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddVisitScreen(sharedViewModel: SharedViewModel,navHostController: NavHostController, visitScheduler: VisitScheduler) {
+fun AddVisitScreen(
+    sharedViewModel: SharedViewModel,
+    navHostController: NavHostController,
+    visitScheduler: VisitScheduler
+) {
 
     //alarm
     var visitReminder: VisitReminder?
@@ -226,7 +230,13 @@ fun AddVisitScreen(sharedViewModel: SharedViewModel,navHostController: NavHostCo
 
 
                     visitReminder =
-                        VisitReminder(visitId, visitAlarmId, doctorName, selectedTime.minusDays(1))
+                        VisitReminder(
+                            visitId,
+                            visitAlarmId,
+                            doctorName,
+                            selectedTime.minusDays(1),
+                            false
+                        )
 
                     visitScheduler.schedule(visitReminder!!)
 

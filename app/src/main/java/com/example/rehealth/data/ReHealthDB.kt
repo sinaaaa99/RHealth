@@ -11,6 +11,7 @@ import com.example.rehealth.data.models.SideEffects
 import com.example.rehealth.data.models.TestReminder
 import com.example.rehealth.data.models.VisitReminder
 import com.example.rehealth.data.models.quiz.QuizClass
+import com.example.rehealth.data.models.quiz.QuizResult
 import com.example.rehealth.data.models.quiz.UserAnswer
 
 @Database(
@@ -22,7 +23,8 @@ import com.example.rehealth.data.models.quiz.UserAnswer
         TestReminder::class,
         VisitReminder::class,
         QuizClass::class,
-        UserAnswer::class
+        UserAnswer::class,
+        QuizResult::class
     ],
     version = 1,
     exportSchema = false

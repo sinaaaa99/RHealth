@@ -28,11 +28,11 @@ fun MainNavGraph(
     }
     NavHost(
         navController = navHostController,
-        startDestination = "BottomBar_Route",
+        startDestination = ScreensNavItem.Home.parentRoute,
         route = "Main_Route"
     ) {
 
-        bottomBarNavGraph(navHostController, sharedViewModel)
+//        bottomBarNavGraph(navHostController, sharedViewModel)
 
         homeNavGraph(navHostController,sharedViewModel)
 

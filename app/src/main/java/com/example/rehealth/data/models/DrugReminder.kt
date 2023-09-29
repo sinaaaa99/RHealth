@@ -12,5 +12,6 @@ data class DrugReminder(
     val alarmId:Int,
     val name: String,
     val reminder: LocalDateTime,
-    val shiftCode:Int
+    val shiftCode:Int,
+    val userAssociation:Int
 )

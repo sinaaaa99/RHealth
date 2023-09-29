@@ -13,6 +13,7 @@ import com.example.rehealth.data.models.SideEffects
 import com.example.rehealth.data.models.TestReminder
 import com.example.rehealth.data.models.VisitReminder
 import com.example.rehealth.data.models.quiz.QuizClass
+import com.example.rehealth.data.models.quiz.QuizResult
 import com.example.rehealth.data.models.quiz.UserAnswer
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
@@ -109,5 +110,33 @@ interface MedicineDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertUserAnswer(userAnswer: UserAnswer)
 
+    //Quiz Result for doctor advice
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertFirstUserCheeks(quizResult: QuizResult)
+
+    @Query("update QuizResult set userCheek1=:userCheek where id=0")
+    suspend fun updateQuizResult1(userCheek: Int)
+
+    @Query("update QuizResult set userCheek2=:userCheek where id=0")
+    suspend fun updateQuizResult2(userCheek: Int)
+
+
+    @Query("select * from QuizResult where id=0")
+    fun readQuizCheeks(): Flow<QuizResult>
+
+
+    //user Association....................................
+
+    // drug..
+    @Query("update Drug_Reminder set userAssociation=:userAssociation where alarmId=:alarmId")
+    suspend fun updateDrugAssociation(alarmId: Int, userAssociation: Int)
+
+    //visit
+    @Query("update VisitReminder set userAssociation=:userAssociation where alarmId=:alarmId")
+    suspend fun updateVisitAssociation(alarmId: Int,userAssociation: Boolean)
+
+    //test
+    @Query("update TestReminder set userAssociation=:userAssociation where alarmId=:alarmId")
+    suspend fun updateTestAssociation(alarmId: Int,userAssociation: Boolean)
 
 }

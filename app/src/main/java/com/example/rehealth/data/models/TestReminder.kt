@@ -11,6 +11,7 @@ data class TestReminder(
     val testId:UUID,
     val alarmId:Int,
     val name:String,
-    val time:LocalDateTime
+    val time:LocalDateTime,
+    val userAssociation:Boolean
 
 )

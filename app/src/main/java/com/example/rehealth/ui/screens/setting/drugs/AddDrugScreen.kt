@@ -369,7 +369,14 @@ fun AddDrugScreen(
 
 
                             drugReminder =
-                                DrugReminder(drugId, alarmId, timeShiftName, selectedTime,timeShiftCode)
+                                DrugReminder(
+                                    drugId,
+                                    alarmId,
+                                    timeShiftName,
+                                    selectedTime,
+                                    timeShiftCode,
+                                    0
+                                )
 
                             drugScheduler.schedule(drugReminder!!)
 //                              drugReminder?.let { drugScheduler::schedule }

@@ -39,7 +39,6 @@ val cardColor = Color(0xFFEDE9F2)
 val yellow10 = Color(0xFFD6D58E)
 
 val buttonColor = Color(0xFFF29472)
-val buttonColorQuiz = Color(0xFF162440)
 val bottomBar_Dark = Color(0xFF567365)
 
 //menu Items Color
@@ -62,6 +61,13 @@ val quizIconColorA = Color(0xFFC298EC)
 
 val quizCardColorB = Color(0xFFFDFF94)
 val quizIconColorB = Color(0xFFEBEE87)
+
+//questions color
+val buttonColorQuiz = Color(0xFF162440)
+val backgroundColorQuiz = Color(0xFFEBF1FF)
+val backgroundColorQuestion = Color(0xFF1E344C)
+val backgroundColorDone = Color(0xFF919CD9)
+val CardColorDone = Color(0xFFC4F2F2)
 
 //import some color
 val md_theme_light_primary = Color(0xFF006A66)

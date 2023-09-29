@@ -9,6 +9,7 @@ import com.example.rehealth.data.models.SideEffects
 import com.example.rehealth.data.models.TestReminder
 import com.example.rehealth.data.models.VisitReminder
 import com.example.rehealth.data.models.quiz.QuizClass
+import com.example.rehealth.data.models.quiz.QuizResult
 import com.example.rehealth.data.models.quiz.UserAnswer
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.Flow
@@ -87,5 +88,13 @@ class RHRepository @Inject constructor(private val medicineDao: MedicineDao) {
 
     //insert user Answer
     suspend fun insertUserAnswer(userAnswer: UserAnswer) = medicineDao.insertUserAnswer(userAnswer)
+
+
+    //Quiz Result for doctor advice
+    suspend fun insertFirstUserCheeks(quizResult: QuizResult)=medicineDao.insertFirstUserCheeks(quizResult)
+    suspend fun updateQuizResult1(userCheek:Int) = medicineDao.updateQuizResult1(userCheek)
+    suspend fun updateQuizResult2(userCheek:Int) = medicineDao.updateQuizResult2(userCheek)
+
+    val readUserCheeks:Flow<QuizResult> = medicineDao.readQuizCheeks()
 
 }

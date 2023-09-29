@@ -7,13 +7,12 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.example.rehealth.R
 import com.example.rehealth.util.Constants.CHANNEL_ID
-import com.example.rehealth.util.Constants.NOTIF_DESCRIPTION
 import com.example.rehealth.util.Constants.NOTIF_ID
 import com.example.rehealth.util.Constants.NOTIF_TITLE
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AlarmReceiver : BroadcastReceiver() {
+class VisitAlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
 

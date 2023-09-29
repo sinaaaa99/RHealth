@@ -224,7 +224,8 @@ fun AddTestScreen(
 
                     Log.d("alarmIDTEst", alarmId.toString())
 
-                    testReminder = TestReminder(testId, alarmId, testName, selectedTime.minusDays(1))
+                    testReminder =
+                        TestReminder(testId, alarmId, testName, selectedTime.minusDays(1), false)
 
                     testScheduler.schedule(testReminder!!)
 

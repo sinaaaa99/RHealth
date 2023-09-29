@@ -18,15 +18,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,9 +46,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.rehealth.R
 import com.example.rehealth.data.models.quiz.QuizClass
+import com.example.rehealth.data.models.quiz.QuizResult
+import com.example.rehealth.navigation.routes.Routes.QuestionDoneScreenRoute
+import com.example.rehealth.navigation.routes.Routes.QuestionsScreenRoute
+import com.example.rehealth.ui.theme.backgroundColorQuestion
+import com.example.rehealth.ui.theme.backgroundColorQuiz
 import com.example.rehealth.ui.theme.buttonColorQuiz
 import com.example.rehealth.ui.theme.greenCheck
 import com.example.rehealth.ui.viewmodel.SharedViewModel
@@ -55,7 +65,11 @@ import java.time.LocalDateTime
 fun ExamScreen(sharedViewModel: SharedViewModel, navHostController: NavHostController) {
 
 
-    val currentQuestion by sharedViewModel.currentQuestion
+    val quizType by sharedViewModel.quizType
+
+    val currentQuestion by
+    if (quizType == 1) sharedViewModel.currentQuestion1
+    else sharedViewModel.currentQuestion2
 
 
     var isSelected1 by remember(currentQuestion) {
@@ -66,18 +80,46 @@ fun ExamScreen(sharedViewModel: SharedViewModel, navHostController: NavHostContr
     }
 
 
-    val quizType by sharedViewModel.quizType
-
     val questions by sharedViewModel.allQuiz.collectAsState()
 
 
-    sharedViewModel.getQuiz()
+    LaunchedEffect(key1 = quizType) {
+
+        sharedViewModel.getQuiz()
+
+        sharedViewModel.getUserCheeks()
+
+    }
+    val usersCheeks by sharedViewModel.userCheeks.collectAsState()
+
+
+    if (usersCheeks is RequestState.Success) {
+
+        val userCheeksResult = usersCheeks as RequestState.Success<QuizResult>
+
+
+        sharedViewModel.userCheeks1.value = userCheeksResult.data.userCheek1
+
+        sharedViewModel.userCheeks2.value = userCheeksResult.data.userCheek2
+
+    }
+
+    var userCheeksYes by remember(quizType) {
+        mutableStateOf(0)
+    }
+
 
     val context = LocalContext.current
 
 
+    val scrollable = rememberScrollState()
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(backgroundColorQuiz)
+            .verticalScroll(scrollable)
+    ) {
 
         Row(
             modifier = Modifier
@@ -142,8 +184,9 @@ fun ExamScreen(sharedViewModel: SharedViewModel, navHostController: NavHostContr
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(150.dp)
-                    .padding(12.dp)
+                    .height(200.dp)
+                    .padding(12.dp),
+                colors = CardDefaults.cardColors(containerColor = backgroundColorQuestion)
             ) {
 
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -152,10 +195,14 @@ fun ExamScreen(sharedViewModel: SharedViewModel, navHostController: NavHostContr
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(8.dp), textAlign = TextAlign.Center,
+                            .padding(8.dp),
+                        textAlign = TextAlign.Center,
                         text = question.data[currentQuestion].title,
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+                        style = MaterialTheme.typography.titleMedium.copy(lineHeight = 32.sp),
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+
+                        )
 
 
                 }
@@ -165,7 +212,7 @@ fun ExamScreen(sharedViewModel: SharedViewModel, navHostController: NavHostContr
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            OptionsBox(isSelected = isSelected1,1, question.data[currentQuestion].answerText1) {
+            OptionsBox(isSelected = isSelected1, 1, question.data[currentQuestion].answerText1) {
 
                 isSelected1 = !isSelected1
 
@@ -174,7 +221,7 @@ fun ExamScreen(sharedViewModel: SharedViewModel, navHostController: NavHostContr
 
             }
 
-            OptionsBox(isSelected = isSelected2,2, question.data[currentQuestion].answerText2) {
+            OptionsBox(isSelected = isSelected2, 2, question.data[currentQuestion].answerText2) {
 
 
                 isSelected2 = !isSelected2
@@ -202,15 +249,54 @@ fun ExamScreen(sharedViewModel: SharedViewModel, navHostController: NavHostContr
                                     if (isSelected1) 1 else if (isSelected2) 2 else 0
                                 sharedViewModel.userAnswerDate.value = LocalDateTime.now()
 
+                                //review user yes Answer
+                                if (isSelected1) {
+                                    userCheeksYes++
+                                }
+
                                 sharedViewModel.changeQuestion()
 
                                 if (currentQuestion == 6) {
 
-                                    navHostController.popBackStack()
+                                    if (isSelected1){
+                                        sharedViewModel.userCheeks1.value +=10
+                                        sharedViewModel.updateQuizResult1()
+                                    }else if (userCheeksYes >= 3) {
 
-                                    sharedViewModel.currentQuestion.value = 0
+                                        if (quizType == 1) {
+
+                                            sharedViewModel.userCheeks1.value++
+                                            sharedViewModel.updateQuizResult1()
+                                        } else if (quizType == 2) {
+                                            sharedViewModel.userCheeks2.value++
+                                            sharedViewModel.updateQuizResult2()
+                                        }
+                                    } else {
+                                        if (quizType == 1) {
+
+                                            sharedViewModel.userCheeks1.value = 0
+                                            sharedViewModel.updateQuizResult1()
+                                        } else if (quizType == 2) {
+
+                                            sharedViewModel.userCheeks2.value = 0
+                                            sharedViewModel.updateQuizResult2()
+                                        }
+
+
+                                    }
+
+                                    navHostController.navigate(QuestionDoneScreenRoute) {
+                                        popUpTo(QuestionsScreenRoute) {
+                                            inclusive = true
+                                        }
+
+                                    }
+
+                                    sharedViewModel.currentQuestion1.value = 0
+                                    sharedViewModel.currentQuestion2.value = 0
 
                                 }
+
 
                             } else {
 
@@ -230,7 +316,8 @@ fun ExamScreen(sharedViewModel: SharedViewModel, navHostController: NavHostContr
                     Text(
                         text = if (currentQuestion == 6) "پایان" else "بعدی",
                         color = Color.White,
-                        style = MaterialTheme.typography.bodyLarge
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
@@ -244,7 +331,7 @@ fun ExamScreen(sharedViewModel: SharedViewModel, navHostController: NavHostContr
 
 
 @Composable
-fun OptionsBox(isSelected: Boolean,answerNumber:Int, answerText: String, onBoxClick: () -> Unit) {
+fun OptionsBox(isSelected: Boolean, answerNumber: Int, answerText: String, onBoxClick: () -> Unit) {
 
 
     Box(
@@ -252,7 +339,7 @@ fun OptionsBox(isSelected: Boolean,answerNumber:Int, answerText: String, onBoxCl
             .fillMaxWidth()
             .padding(12.dp)
             .height(60.dp)
-            .border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(15.dp))
+            .border(width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(15.dp))
             .clip(RoundedCornerShape(15.dp))
             .background(if (isSelected) greenCheck else MaterialTheme.colorScheme.background)
             .clickable {
@@ -284,7 +371,8 @@ fun OptionsBox(isSelected: Boolean,answerNumber:Int, answerText: String, onBoxCl
 
             Text(
                 color = if (isSelected) Color.White else Color.Black,
-                text = answerText, style = MaterialTheme.typography.bodyLarge,
+                text = answerText,
+                style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(horizontal = 12.dp),
                 fontWeight = FontWeight.Bold
             )
@@ -293,7 +381,7 @@ fun OptionsBox(isSelected: Boolean,answerNumber:Int, answerText: String, onBoxCl
                 modifier = Modifier
                     .width(1.dp)
                     .fillMaxHeight(),
-                color = if (isSelected) Color.White else Color.Black
+                color = if (isSelected) Color.White else Color.Gray
             )
 
             Text(

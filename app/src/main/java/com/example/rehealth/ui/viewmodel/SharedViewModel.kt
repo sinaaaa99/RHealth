@@ -11,6 +11,7 @@ import com.example.rehealth.data.models.Medicines
 import com.example.rehealth.data.models.TestReminder
 import com.example.rehealth.data.models.VisitReminder
 import com.example.rehealth.data.models.quiz.QuizClass
+import com.example.rehealth.data.models.quiz.QuizResult
 import com.example.rehealth.data.models.quiz.UserAnswer
 import com.example.rehealth.data.prepopulate.InitQuiz
 import com.example.rehealth.data.prepopulate.PrepopulateMedicine
@@ -20,7 +21,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.util.UUID
@@ -128,7 +128,8 @@ class SharedViewModel @Inject constructor(private val repository: RHRepository) 
                 alarmId.value,
                 timeShiftName.value,
                 timeReminder.value,
-                shiftCode.value
+                shiftCode.value,
+                0
             )
 
             repository.insertDrugReminder(drugReminder)
@@ -261,7 +262,8 @@ class SharedViewModel @Inject constructor(private val repository: RHRepository) 
                 testId.value,
                 alarmIdTest.value,
                 testName.value,
-                testTimeReminder.value
+                testTimeReminder.value,
+                false
             )
 
             repository.insertTestsReminder(testReminder)
@@ -328,7 +330,8 @@ class SharedViewModel @Inject constructor(private val repository: RHRepository) 
                 visitId.value,
                 alarmIdVisit.value,
                 doctorName.value,
-                visitTimeReminder.value
+                visitTimeReminder.value,
+                false
             )
 
             repository.insertVisitsReminder(visitReminder)
@@ -393,8 +396,10 @@ class SharedViewModel @Inject constructor(private val repository: RHRepository) 
     private val _allQuiz = MutableStateFlow<RequestState<List<QuizClass>>>(RequestState.Idle)
     val allQuiz: StateFlow<RequestState<List<QuizClass>>> = _allQuiz
 
+
     val quizType: MutableState<Int> = mutableStateOf(1)
-    var currentQuestion: MutableState<Int> = mutableStateOf(0)
+    var currentQuestion1: MutableState<Int> = mutableStateOf(0)
+    var currentQuestion2: MutableState<Int> = mutableStateOf(0)
 
     fun getQuiz() {
         _allQuiz.value = RequestState.Loading
@@ -410,7 +415,6 @@ class SharedViewModel @Inject constructor(private val repository: RHRepository) 
     }
 
     //insert User Answer
-
     var quizId: MutableState<Int> = mutableStateOf(0)
     var userAnswerRate: MutableState<Int> = mutableStateOf(0)
     var userAnswerDate: MutableState<LocalDateTime> = mutableStateOf(LocalDateTime.now())
@@ -440,14 +444,73 @@ class SharedViewModel @Inject constructor(private val repository: RHRepository) 
 
             insertUserAnswer()
 
-            if (currentQuestion.value < 6){
+            if (quizType.value == 1 && currentQuestion1.value < 6) {
 
-                currentQuestion.value++
+                currentQuestion1.value++
             }
+            if (quizType.value == 2 && currentQuestion2.value < 6) {
+
+                currentQuestion2.value++
+            }
+
 
         }
 
     }
+
+
+    //Quiz Result for doctor advice
+
+    private val _userCheeks = MutableStateFlow<RequestState<QuizResult>>(RequestState.Idle)
+    val userCheeks: StateFlow<RequestState<QuizResult>> = _userCheeks
+
+    var userCheeks1: MutableState<Int> = mutableStateOf(0)
+    var userCheeks2: MutableState<Int> = mutableStateOf(0)
+
+
+    fun insertFirstUserCheeks() {
+
+        val quizResult = QuizResult(0, 0, 0)
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+            repository.insertFirstUserCheeks(quizResult)
+        }
+    }
+
+    fun getUserCheeks() {
+
+        _userCheeks.value = RequestState.Loading
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+            repository.readUserCheeks.collect { quizCheeks ->
+
+                _userCheeks.value = RequestState.Success(quizCheeks)
+
+            }
+        }
+    }
+
+
+    fun updateQuizResult1() {
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+            repository.updateQuizResult1(userCheeks1.value)
+        }
+
+    }
+
+    fun updateQuizResult2() {
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+            repository.updateQuizResult2(userCheeks2.value)
+        }
+
+    }
+
 
     init {
 
@@ -472,6 +535,9 @@ class SharedViewModel @Inject constructor(private val repository: RHRepository) 
 
         InitQuiz.initQuiz()
         insertQuiz()
+
+        //first user cheeks
+        insertFirstUserCheeks()
 
 
     }

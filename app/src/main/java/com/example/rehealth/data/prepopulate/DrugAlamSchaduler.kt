@@ -4,9 +4,11 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import com.example.rehealth.data.broadcast.DrugAlarmReceiver
 import com.example.rehealth.data.interfaces.DrugScheduler
 import com.example.rehealth.data.models.DrugReminder
+import com.example.rehealth.ui.viewmodel.SharedViewModel
 import java.time.ZoneId
 
 class DrugAlamScheduler(
@@ -37,6 +39,8 @@ class DrugAlamScheduler(
 
             )
         )
+
+
     }
 
     override fun cancel(drugReminder: DrugReminder) {

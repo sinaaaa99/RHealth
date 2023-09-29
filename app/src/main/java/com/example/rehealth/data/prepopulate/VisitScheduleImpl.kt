@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.example.rehealth.data.interfaces.VisitScheduler
-import com.example.rehealth.data.broadcast.AlarmReceiver
+import com.example.rehealth.data.broadcast.VisitAlarmReceiver
 import com.example.rehealth.data.models.VisitReminder
 import com.example.rehealth.util.Constants.NOTIF_ID
 import com.example.rehealth.util.Constants.NOTIF_TITLE
@@ -20,7 +20,7 @@ class VisitScheduleImpl(
 
     override fun schedule(visitReminder: VisitReminder) {
 
-        val intent = Intent(context, AlarmReceiver::class.java).apply {
+        val intent = Intent(context, VisitAlarmReceiver::class.java).apply {
             putExtra(NOTIF_ID, visitReminder.alarmId)
             putExtra(NOTIF_TITLE, visitReminder.title)
         }
@@ -49,7 +49,7 @@ class VisitScheduleImpl(
             PendingIntent.getBroadcast(
                 context,
                 visitReminder.alarmId,
-                Intent(context,AlarmReceiver::class.java),
+                Intent(context,VisitAlarmReceiver::class.java),
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
         )
