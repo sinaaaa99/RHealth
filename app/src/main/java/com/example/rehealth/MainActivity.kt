@@ -10,9 +10,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.example.rehealth.data.interfaces.VisitScheduler
 import com.example.rehealth.data.interfaces.DrugScheduler
+import com.example.rehealth.data.interfaces.QuizScheduler
 import com.example.rehealth.data.interfaces.TestScheduler
 import com.example.rehealth.data.prepopulate.VisitScheduleImpl
 import com.example.rehealth.data.prepopulate.DrugAlamScheduler
+import com.example.rehealth.data.prepopulate.QuizAlarmScheduler
 import com.example.rehealth.data.prepopulate.TestAlarmScheduler
 import com.example.rehealth.ui.screens.main.MainScreen
 import com.example.rehealth.ui.theme.ReHealthTheme
@@ -29,6 +31,7 @@ class MainActivity : ComponentActivity() {
         val visitScheduler: VisitScheduler = VisitScheduleImpl(this)
         val drugScheduler: DrugScheduler = DrugAlamScheduler(this)
         val testScheduler: TestScheduler = TestAlarmScheduler(this)
+        val quizScheduler: QuizScheduler = QuizAlarmScheduler(this)
 
         setContent {
             ReHealthTheme {
@@ -37,7 +40,13 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainScreen(sharedViewModel, visitScheduler, drugScheduler, testScheduler)
+                    MainScreen(
+                        sharedViewModel,
+                        visitScheduler,
+                        drugScheduler,
+                        testScheduler,
+                        quizScheduler
+                    )
                 }
             }
         }

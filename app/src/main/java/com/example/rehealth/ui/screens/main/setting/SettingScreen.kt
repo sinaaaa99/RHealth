@@ -2,6 +2,7 @@ package com.example.rehealth.ui.screens.main.setting
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,9 +15,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -33,8 +35,10 @@ import com.example.rehealth.R
 import com.example.rehealth.navigation.routes.Routes.DrugListScreenRoute
 import com.example.rehealth.navigation.routes.Routes.TestListScreenRoute
 import com.example.rehealth.navigation.routes.Routes.VisitListScreenRoute
-import com.example.rehealth.ui.theme.cardColor
+import com.example.rehealth.ui.theme.associationBackground
+import com.example.rehealth.ui.theme.cream10
 import com.example.rehealth.ui.theme.drugSettingBack
+import com.example.rehealth.ui.theme.green30
 import com.example.rehealth.ui.theme.quizSettingBack
 import com.example.rehealth.ui.theme.testSettingBack
 import com.example.rehealth.ui.theme.visitSettingBack
@@ -46,12 +50,16 @@ fun SettingScreen(navHostController: NavHostController) {
     val scrollable = rememberScrollState()
 
     Scaffold(topBar = {
-        SettingTopAppBar()
+        SettingTopAppBar(){
+            //on profile Click
+            navHostController.navigate("UserIdentifyScreen")
+        }
     }) {
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(associationBackground)
                 .padding(it)
                 .verticalScroll(scrollable)
         ) {
@@ -77,13 +85,17 @@ fun SettingScreen(navHostController: NavHostController) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(100.dp)
-                    .padding(8.dp), backgroundColor = cardColor, shape = MaterialTheme.shapes.large
+                    .height(110.dp)
+                    .padding(8.dp)
+                    .clickable {
+                        navHostController.navigate("AssociationMainScreen")
+                    },
+                colors = CardDefaults.cardColors(containerColor = green30)
             ) {
 
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxSize()
                         .padding(8.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
@@ -113,12 +125,12 @@ fun SettingScreen(navHostController: NavHostController) {
                             modifier = Modifier.fillMaxWidth(),
                             text = "میزان مشارکت شما",
                             style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold
                         )
                         Text(
                             modifier = Modifier.fillMaxWidth(),
                             text = "پاسخ به هشدار ها",
-                            style = MaterialTheme.typography.labelSmall, color = Color.Gray
+                            style = MaterialTheme.typography.labelSmall,
+                            color = cream10
                         )
                     }
 
@@ -145,7 +157,8 @@ fun SettingScreen(navHostController: NavHostController) {
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
 
-                    Icon(modifier=Modifier.size(30.dp),
+                    Icon(
+                        modifier = Modifier.size(30.dp),
                         painter = painterResource(id = R.drawable.bottom_arrow),
                         contentDescription = ""
                     )
@@ -172,7 +185,7 @@ fun SettingScreen(navHostController: NavHostController) {
                         title = "ویزیت",
                         bacColor = visitSettingBack,
                         height = 200.dp
-                    ){
+                    ) {
 
                         navHostController.navigate(VisitListScreenRoute)
 
@@ -183,7 +196,7 @@ fun SettingScreen(navHostController: NavHostController) {
                         title = "آزمایش",
                         bacColor = testSettingBack,
                         height = 250.dp
-                    ){
+                    ) {
 
                         navHostController.navigate(TestListScreenRoute)
 
@@ -198,7 +211,7 @@ fun SettingScreen(navHostController: NavHostController) {
                         title = "دارو",
                         bacColor = drugSettingBack,
                         height = 250.dp
-                    ){
+                    ) {
 
                         navHostController.navigate(DrugListScreenRoute)
 
@@ -209,8 +222,9 @@ fun SettingScreen(navHostController: NavHostController) {
                         title = "پرسشنامه",
                         bacColor = quizSettingBack,
                         height = 200.dp
-                    ){
+                    ) {
 
+                        navHostController.navigate("ListQuizReminderScreen")
                     }
 
                 }

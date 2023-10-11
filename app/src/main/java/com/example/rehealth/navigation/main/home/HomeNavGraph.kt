@@ -1,6 +1,6 @@
 package com.example.rehealth.navigation.main.home
 
-import android.util.Log
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -10,13 +10,16 @@ import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import com.example.rehealth.navigation.main.ScreensNavItem
 import com.example.rehealth.navigation.routes.Routes.DrugHomeScreenRoute
+import com.example.rehealth.navigation.routes.Routes.DrugNotification
 import com.example.rehealth.navigation.routes.Routes.Message
 import com.example.rehealth.navigation.routes.Routes.QuestionDoneScreenRoute
 import com.example.rehealth.navigation.routes.Routes.QuestionsScreenRoute
 import com.example.rehealth.navigation.routes.Routes.QuizHomeScreenRoute
+import com.example.rehealth.navigation.routes.Routes.QuizNotification
 import com.example.rehealth.navigation.routes.Routes.TestHomeScreenRoute
 import com.example.rehealth.navigation.routes.Routes.TestNotification
 import com.example.rehealth.navigation.routes.Routes.VisitHomeScreenRoute
+import com.example.rehealth.navigation.routes.Routes.VisitNotification
 import com.example.rehealth.ui.screens.main.home.HomeScreen
 import com.example.rehealth.ui.screens.main.home.drug.DrugHomeScreen
 import com.example.rehealth.ui.screens.main.home.quiz.DoneScreen
@@ -39,7 +42,7 @@ fun NavGraphBuilder.homeNavGraph(
         route = ScreensNavItem.Home.parentRoute
     ) {
 
-        //Home Screens
+        //Home Screens bottom bar
         composable(ScreensNavItem.Medicine.route) {
 
             MedicineScreen(sharedViewModel)
@@ -47,7 +50,7 @@ fun NavGraphBuilder.homeNavGraph(
 
         composable(ScreensNavItem.Home.route) {
 
-            HomeScreen(navHostController,sharedViewModel)
+            HomeScreen(navHostController, sharedViewModel)
         }
 
         composable(ScreensNavItem.Setting.route) {
@@ -56,19 +59,49 @@ fun NavGraphBuilder.homeNavGraph(
         }
 
 
-
-
-
-
         //items...............................................
-        composable(DrugHomeScreenRoute) {
+        composable(
+            DrugHomeScreenRoute,
+            arguments = listOf(navArgument(Message) { type = NavType.StringType }),
+            deepLinks = listOf(navDeepLink {
+                uriPattern = "$DrugNotification/$Message={$Message}"
+            })
+        ) {
+            val argument = it.arguments
+            val drugAlarmId = argument?.getString(Message)
 
-            DrugHomeScreen(sharedViewModel)
+            LaunchedEffect(key1 = drugAlarmId) {
+
+                if (drugAlarmId != null) {
+                    sharedViewModel.drugAlarmId.value = drugAlarmId.toInt()
+                    sharedViewModel.updateDrugAssociation()
+                }
+            }
+
+
+
+            DrugHomeScreen(sharedViewModel, navHostController)
         }
 
-        composable(VisitHomeScreenRoute) {
+        composable(
+            VisitHomeScreenRoute,
+            arguments = listOf(navArgument(Message) { type = NavType.StringType }),
+            deepLinks = listOf(navDeepLink {
+                uriPattern = "$VisitNotification/$Message={$Message}"
+            })
+        ) {
 
-            VisitHomeScreen(sharedViewModel)
+            val argument = it.arguments
+            val visitAlarmId = argument?.getString(Message)
+
+            LaunchedEffect(key1 = visitAlarmId) {
+                if (visitAlarmId != null) {
+                    sharedViewModel.visitAlarmId.value = visitAlarmId.toInt()
+                    sharedViewModel.updateVisitAssociation()
+                }
+            }
+
+            VisitHomeScreen(sharedViewModel, navHostController)
         }
         composable(
             TestHomeScreenRoute,
@@ -78,19 +111,40 @@ fun NavGraphBuilder.homeNavGraph(
 
             val arguments = it.arguments
 
-            val message = arguments?.getString(Message)
+            val testAlarmId = arguments?.getString(Message)
 
-            Log.d("testLogScreen", message.toString())
+            LaunchedEffect(key1 = testAlarmId) {
+                if (testAlarmId != null) {
 
-            TestHomeScreen(sharedViewModel)
+                    sharedViewModel.testAlarmId.value = testAlarmId.toInt()
+                    sharedViewModel.updateTestAssociation()
+                }
+            }
+
+
+            TestHomeScreen(sharedViewModel, navHostController)
         }
 
 
         //quiz Screens
-        composable(QuizHomeScreenRoute) {
+        composable(
+            QuizHomeScreenRoute,
+            arguments = listOf(navArgument(Message) { type = NavType.StringType }),
+            deepLinks = listOf(navDeepLink {
+                uriPattern = "$QuizNotification/$Message={$Message}"
+            })
+        ) {
 
-            QuizHomeScreen(navHostController)
+            val arguments = it.arguments
+
+            val quizAlarmId = arguments?.getString(Message)
+
+            if (quizAlarmId != null)
+                sharedViewModel.quizAlarmId.value = quizAlarmId.toInt()
+
+            QuizHomeScreen(navHostController, sharedViewModel)
         }
+
 
         composable(
             QuestionsScreenRoute,
@@ -107,7 +161,7 @@ fun NavGraphBuilder.homeNavGraph(
 
         composable(QuestionDoneScreenRoute) {
 
-            DoneScreen(sharedViewModel = sharedViewModel)
+            DoneScreen(sharedViewModel, navHostController)
         }
 
     }

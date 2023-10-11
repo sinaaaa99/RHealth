@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.example.rehealth.data.interfaces.VisitScheduler
 import com.example.rehealth.data.interfaces.DrugScheduler
+import com.example.rehealth.data.interfaces.QuizScheduler
 import com.example.rehealth.data.interfaces.TestScheduler
 import com.example.rehealth.navigation.main.MainNavGraph
 import com.example.rehealth.ui.screens.main.bottombar.CustomBottomBar
@@ -21,7 +22,8 @@ fun MainScreen(
     sharedViewModel: SharedViewModel,
     visitScheduler: VisitScheduler,
     drugScheduler: DrugScheduler,
-    testScheduler: TestScheduler
+    testScheduler: TestScheduler,
+    quizScheduler: QuizScheduler
 ) {
 
     val navHostController = rememberNavController()
@@ -31,7 +33,7 @@ fun MainScreen(
 
     Scaffold(
         bottomBar = {
-            CustomBottomBar(navHostController = navHostController)
+            CustomBottomBar(navHostController)
         }) {
 
         Column(
@@ -40,7 +42,14 @@ fun MainScreen(
                 .padding(it)
         ) {
 
-            MainNavGraph(navHostController, sharedViewModel, visitScheduler, drugScheduler,testScheduler)
+            MainNavGraph(
+                navHostController,
+                sharedViewModel,
+                visitScheduler,
+                drugScheduler,
+                testScheduler,
+                quizScheduler
+            )
         }
 
     }

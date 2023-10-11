@@ -21,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,9 +37,6 @@ import androidx.navigation.NavHostController
 import com.example.rehealth.R
 import com.example.rehealth.data.models.HomeMenuItemClass
 import com.example.rehealth.data.models.quiz.QuizResult
-import com.example.rehealth.navigation.routes.Routes.DrugHomeScreenRoute
-import com.example.rehealth.navigation.routes.Routes.QuizHomeScreenRoute
-import com.example.rehealth.navigation.routes.Routes.VisitHomeScreenRoute
 import com.example.rehealth.ui.theme.menuCardColor
 import com.example.rehealth.ui.theme.menuItemColor1
 import com.example.rehealth.ui.theme.menuItemColor2
@@ -56,43 +54,40 @@ fun HomeScreen(navHostController: NavHostController, sharedViewModel: SharedView
             menuItemColor1,
             menuItemColor2,
             menuItemColor1,
-            "داروها",
             "دارو",
-            "0",
             150.dp
         ),
         HomeMenuItemClass(
             menuItemColor1,
             menuItemColor3,
             menuItemColor2,
-            "ویزیت ها",
-            "ویزیت", "0",
+            "پرسشنامه",
             120.dp
         ),
         HomeMenuItemClass(
             menuItemColor2,
             menuItemColor4,
             menuItemColor3,
-            "آزمایش ها",
             "آزمایش",
-            "0",
             120.dp
         ),
         HomeMenuItemClass(
             menuItemColor3,
             menuItemColor4,
             menuItemColor4,
-            "پرسشنامه",
-            "",
-            "",
-            250.dp
+            "ویزیت",
+            170.dp
         )
     )
 
+    LaunchedEffect(key1 = Unit ){
+
+        sharedViewModel.getUserCheeks()
+    }
     val usersCheeks by sharedViewModel.userCheeks.collectAsState()
 
-    var patientState by remember {
-        mutableStateOf(0)
+    var patientState: Boolean? by remember(usersCheeks) {
+        mutableStateOf(null)
     }
 
 
@@ -100,10 +95,7 @@ fun HomeScreen(navHostController: NavHostController, sharedViewModel: SharedView
 
         val userCheeksResult = usersCheeks as RequestState.Success<QuizResult>
 
-        if (userCheeksResult.data.userCheek1 > 6 || userCheeksResult.data.userCheek2 > 6) {
-
-            patientState = 1
-        }
+        patientState = userCheeksResult.data.userCheek1 > 6 || userCheeksResult.data.userCheek2 > 6
 
 
     }
@@ -144,8 +136,10 @@ fun HomeScreen(navHostController: NavHostController, sharedViewModel: SharedView
             colors = CardDefaults.cardColors(containerColor = menuCardColor)
         ) {
 
-            Row(modifier = Modifier.padding(horizontal = 8.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
 
                 Box(
                     contentAlignment = Alignment.Center,
@@ -173,8 +167,8 @@ fun HomeScreen(navHostController: NavHostController, sharedViewModel: SharedView
 
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = if (patientState == 0) "لطفا داروهای خود را به موقع مصرف نمایید "
-                        else "هرچه سریعتر به پزشک خود مراجعه نمایید.",
+                        text = if (patientState == true) "هرچه سریعتر به پزشک خود مراجعه نمایید."
+                        else "لطفا داروهای خود را به موقع مصرف نمایید ",
                         style = MaterialTheme.typography.bodyLarge,
                         color = Color.Black
                     )
@@ -184,7 +178,11 @@ fun HomeScreen(navHostController: NavHostController, sharedViewModel: SharedView
         }
 
 
-        LazyColumn {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(menuItemColor4)
+        ) {
 
             itemsIndexed(listOfItems) { index, menuItem ->
 
@@ -193,19 +191,19 @@ fun HomeScreen(navHostController: NavHostController, sharedViewModel: SharedView
                     when (index) {
 
                         0 -> {
-                            navHostController.navigate(DrugHomeScreenRoute)
+                            navHostController.navigate("DrugHomeScreenRoute/0")
                         }
 
                         1 -> {
-                            navHostController.navigate(VisitHomeScreenRoute)
+                            navHostController.navigate("QuizHomeScreenRoute/0")
                         }
 
                         2 -> {
-                            navHostController.navigate("TestHomeScreenRoute/Home")
+                            navHostController.navigate("TestHomeScreenRoute/0")
                         }
 
                         3 -> {
-                            navHostController.navigate(QuizHomeScreenRoute)
+                            navHostController.navigate("VisitHomeScreenRoute/0")
                         }
 
                         else -> {}

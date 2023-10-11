@@ -1,6 +1,9 @@
 package com.example.rehealth.ui.screens.main.home.visit
 
+import android.app.NotificationManager
+import android.content.Context
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,22 +23,30 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.rehealth.data.models.VisitReminder
 import com.example.rehealth.ui.theme.drugBackgroundColor
 import com.example.rehealth.ui.viewmodel.SharedViewModel
 import com.example.rehealth.util.RequestState
 
 @Composable
-fun VisitHomeScreen(sharedViewModel: SharedViewModel) {
+fun VisitHomeScreen(sharedViewModel: SharedViewModel,navHostController: NavHostController) {
+
+    val context = LocalContext.current
+
+    val notificationManger =
+        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+    notificationManger.cancel(sharedViewModel.visitAlarmId.value)
 
     Column(modifier = Modifier
         .fillMaxSize()
         .background(drugBackgroundColor)) {
 
 
-//        NonFoundScreen(name = "ویزیتی")
 
         val visits by sharedViewModel.allVisit.collectAsState()
 
@@ -48,7 +59,7 @@ fun VisitHomeScreen(sharedViewModel: SharedViewModel) {
         ) {
 
 
-            Icon(modifier=Modifier.size(30.dp),
+            Icon(modifier=Modifier.size(30.dp).clickable { navHostController.popBackStack() },
                 imageVector = Icons.Default.KeyboardArrowLeft,
                 contentDescription = "KeyboardArrowLeft"
             )

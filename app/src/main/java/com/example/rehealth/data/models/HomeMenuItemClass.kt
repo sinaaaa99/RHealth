@@ -8,7 +8,5 @@ data class HomeMenuItemClass(
     val backgroundColor2:Color,
     val cardColor:Color,
     val title:String,
-    val subTitle:String,
-    val count:String,
     val height:Dp
 )

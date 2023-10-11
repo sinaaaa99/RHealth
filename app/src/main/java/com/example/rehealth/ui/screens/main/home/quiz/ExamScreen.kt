@@ -129,7 +129,7 @@ fun ExamScreen(sharedViewModel: SharedViewModel, navHostController: NavHostContr
             horizontalArrangement = Arrangement.Start
         ) {
 
-            Icon(
+            Icon(modifier=Modifier.clickable { navHostController.popBackStack() },
                 imageVector = Icons.Default.KeyboardArrowLeft,
                 contentDescription = "KeyboardArrowLeft quiz screen"
             )

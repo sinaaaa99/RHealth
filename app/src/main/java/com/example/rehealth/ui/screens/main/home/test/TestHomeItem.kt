@@ -14,9 +14,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,10 +32,15 @@ import androidx.compose.ui.unit.dp
 import com.example.rehealth.data.models.TestReminder
 import com.example.rehealth.ui.theme.drugBoxColor
 import com.example.rehealth.ui.theme.drugItemNumColor
+import com.example.rehealth.ui.theme.greenCheck
+import com.example.rehealth.ui.theme.red50
 import java.time.format.DateTimeFormatter
 
 @Composable
 fun TestHomeItem(testReminder: TestReminder, itemNumber: Int) {
+
+    val userAssociation = testReminder.userAssociation
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -110,39 +119,58 @@ fun TestHomeItem(testReminder: TestReminder, itemNumber: Int) {
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
 
+                        Box(
+                            modifier = Modifier
+                                .background(color = drugBoxColor, shape = CircleShape)
+                                .padding(6.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+
+                            Text(
+                                modifier = Modifier.padding(2.dp),
+                                text = testReminder.time.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")),
+                                style = MaterialTheme.typography.titleSmall
+                            )
+
+                        }
+
+                        Box(
+                            modifier = Modifier
+                                .background(color = drugBoxColor, shape = CircleShape)
+                                .padding(6.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+
+                            Text(
+                                modifier = Modifier.padding(2.dp),
+                                text = testReminder.time.format(DateTimeFormatter.ofPattern("hh:mm")),
+                                style = MaterialTheme.typography.titleSmall
+                            )
+
+                        }
+                    }
                     Box(
                         modifier = Modifier
                             .background(color = drugBoxColor, shape = CircleShape)
-                            .padding(6.dp),
+                            .padding(4.dp),
                         contentAlignment = Alignment.Center
                     ) {
 
-                        Text(
-                            modifier = Modifier.padding(2.dp),
-                            text = testReminder.time.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")),
-                            style = MaterialTheme.typography.titleSmall
+                        Icon(
+                            imageVector = if (userAssociation) Icons.Default.Check else Icons.Default.Close,
+                            contentDescription = "association cheek icon of tests",
+                            tint = if (userAssociation) greenCheck else red50
                         )
-
                     }
 
-                    Box(
-                        modifier = Modifier
-                            .background(color = drugBoxColor, shape = CircleShape)
-                            .padding(6.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-
-                        Text(
-                            modifier = Modifier.padding(2.dp),
-                            text = testReminder.time.format(DateTimeFormatter.ofPattern("hh:mm")),
-                            style = MaterialTheme.typography.titleSmall
-                        )
-
-                    }
                 }
             }
 

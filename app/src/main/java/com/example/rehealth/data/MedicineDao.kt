@@ -5,13 +5,16 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.example.rehealth.data.models.DrugReminder
-import com.example.rehealth.data.models.DrugsClass
+import com.example.rehealth.data.models.drug.DrugReminder
+import com.example.rehealth.data.models.drug.DrugsClass
 import com.example.rehealth.data.models.MedicineWithSideEffects
 import com.example.rehealth.data.models.Medicines
+import com.example.rehealth.data.models.QuizReminder
 import com.example.rehealth.data.models.SideEffects
 import com.example.rehealth.data.models.TestReminder
+import com.example.rehealth.data.models.UserIdentification
 import com.example.rehealth.data.models.VisitReminder
+import com.example.rehealth.data.models.drug.ReminderWithDrugs
 import com.example.rehealth.data.models.quiz.QuizClass
 import com.example.rehealth.data.models.quiz.QuizResult
 import com.example.rehealth.data.models.quiz.UserAnswer
@@ -41,11 +44,11 @@ interface MedicineDao {
     suspend fun insertDrugReminder(drugReminder: DrugReminder)
 
     //read
-    @Query("select * from Drug_Reminder")
+    @Query("select * from DrugReminder")
     fun getAllDrugReminder(): Flow<List<DrugReminder>>
 
     //delete one Drug Reminder
-    @Query("delete from Drug_Reminder where drugId=:drugId")
+    @Query("delete from DrugReminder where reminderId=:drugId")
     suspend fun deleteDrugReminder(drugId: UUID)
 
 
@@ -54,17 +57,27 @@ interface MedicineDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDrugs(drugsClass: DrugsClass)
 
-    //read
-    @Query("select * from DrugsClass where shiftTime=:timeShiftCode order by id")
-    fun getAllDrugs(timeShiftCode: Int): Flow<List<DrugsClass>>
+    //read drugs and drug reminder
+    @Transaction
+    @Query("select * from DrugReminder where reminderId=:reminderId ")
+    fun getReminderWithDrugs(reminderId: UUID): Flow<ReminderWithDrugs>
+
+    @Transaction
+    @Query("select * from DrugReminder where shiftCode=:shiftCode ")
+    fun getReminderWithDrugsByShift(shiftCode: Int): Flow<ReminderWithDrugs?>
+
+    //getAllDrugsById
+    /*@Query("select * from DrugsClass where shiftId=:drugId order by id")
+    fun getAllDrugsById(drugId:UUID): Flow<List<DrugsClass>>*/
+
 
     //Delete one Drug
-    @Query("delete from DrugsClass where id=:drugId")
+    @Query("delete from DrugsClass where drugId=:drugId")
     suspend fun deleteDrug(drugId: Int)
 
     //delete all drug in shift
-    @Query("delete from DrugsClass where shiftId=:shiftId")
-    suspend fun deleteShiftDrug(shiftId: UUID)
+    /*@Query("delete from DrugsClass where shiftId=:shiftId")
+    suspend fun deleteShiftDrug(shiftId: UUID)*/
 
 
     //Test Reminder class...............................
@@ -127,16 +140,51 @@ interface MedicineDao {
 
     //user Association....................................
 
-    // drug..
-    @Query("update Drug_Reminder set userAssociation=:userAssociation where alarmId=:alarmId")
-    suspend fun updateDrugAssociation(alarmId: Int, userAssociation: Int)
+    //test
+    @Query("update TestReminder set userAssociation=1 where alarmId=:alarmId")
+    suspend fun updateTestAssociation(alarmId: Int)
+
+    @Query("select count(userAssociation) from TestReminder where userAssociation=1")
+    fun getTestAssociation(): Flow<Int>
+
+    @Query("select count(*) from TestReminder")
+    fun getTestSize(): Flow<Int>
 
     //visit
-    @Query("update VisitReminder set userAssociation=:userAssociation where alarmId=:alarmId")
-    suspend fun updateVisitAssociation(alarmId: Int,userAssociation: Boolean)
+    @Query("update VisitReminder set userAssociation=1 where alarmId=:alarmId")
+    suspend fun updateVisitAssociation(alarmId: Int)
 
-    //test
-    @Query("update TestReminder set userAssociation=:userAssociation where alarmId=:alarmId")
-    suspend fun updateTestAssociation(alarmId: Int,userAssociation: Boolean)
+    @Query("select count(userAssociation) from VisitReminder where userAssociation=1")
+    fun getVisitAssociation(): Flow<Int>
 
+    @Query("select count(*) from VisitReminder")
+    fun getVisitSize(): Flow<Int>
+
+    //drug
+    @Query("update DrugReminder set userAssociation=(userAssociation+1) where alarmId=:alarmId")
+    suspend fun updateDrugAssociation(alarmId: Int)
+
+    /*@Query("update Drug_Reminder set notificationCount=(notificationCount+1) where alarmId=:alarmId")
+    suspend fun updateDrugNotification(alarmId: Int)*/
+
+
+    //Quiz Reminder.......................................
+    //Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertQuizReminder(quizReminder: QuizReminder)
+
+    //read
+    @Query("select * from QuizReminder")
+    fun getAllQuizReminder(): Flow<List<QuizReminder>>
+
+    //delete one Drug Reminder
+    @Query("delete from QuizReminder where quizId=:quizId")
+    suspend fun deleteQuizReminder(quizId: Int)
+
+    //user Identification
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertUserIdentification(userIdentification: UserIdentification)
+
+    @Query("select * from UserIdentification where id=0")
+    fun readUserIdentification(): Flow<UserIdentification?>
 }

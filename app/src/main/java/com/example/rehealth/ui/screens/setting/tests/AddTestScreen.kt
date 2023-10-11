@@ -1,6 +1,10 @@
 package com.example.rehealth.ui.screens.setting.tests
 
-import android.util.Log
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -43,11 +47,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import com.example.rehealth.R
 import com.example.rehealth.data.interfaces.TestScheduler
@@ -121,6 +127,13 @@ fun AddTestScreen(
 
     val testId by sharedViewModel.testId
     val alarmId by sharedViewModel.alarmIdTest
+
+    val context = LocalContext.current
+
+    val notificationPermissionState = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = {}
+    )
 
     Column(
         Modifier
@@ -222,20 +235,48 @@ fun AddTestScreen(
                     alarmCheek = onCheek
                 })) {
 
-                    Log.d("alarmIDTEst", alarmId.toString())
+                    if (Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
 
-                    testReminder =
-                        TestReminder(testId, alarmId, testName, selectedTime.minusDays(1), false)
+                        val permissionCheekResult =
+                            ContextCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.POST_NOTIFICATIONS
+                            )
 
-                    testScheduler.schedule(testReminder!!)
+                        if (permissionCheekResult == PackageManager.PERMISSION_GRANTED) {
 
-                    sharedViewModel.insertTestsReminder()
+                            testReminder =
+                                TestReminder(testId, alarmId, testName, selectedTime.minusDays(1), false)
 
-                    navController.popBackStack()
+                            testScheduler.schedule(testReminder!!)
 
-//                    testReminder.let { testScheduler::schedule }
+                            sharedViewModel.insertTestsReminder()
+
+                            navController.popBackStack()
+
+                        } else {
+                            notificationPermissionState.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        }
+
+
+                    }
+                    else {
+
+                        testReminder =
+                            TestReminder(testId, alarmId, testName, selectedTime.minusDays(1), false)
+
+                        testScheduler.schedule(testReminder!!)
+
+                        sharedViewModel.insertTestsReminder()
+
+                        navController.popBackStack()
+                    }
+
+
+
+
                 }
-                Log.d("alarmIDTEst", alarmId.toString())
+
 
 
             }

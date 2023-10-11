@@ -20,8 +20,10 @@ val green31 = Color(0xFFa1cbc3)
 val green32 = Color(0xFFb8d8d2)
 val greenCheck = Color(0xFF4CA649)
 val orange20 = Color(0xFFD9A78B)
+
 //val orange80 = Color(0xFFA66249)
 val blue30 = Color(0xFFA3C4D9)
+
 //val blue10 = Color(0xFFA3AFBF)
 val red50 = Color(0xFFF23005)
 val yellow70 = Color(0xFFD99B29)
@@ -54,6 +56,11 @@ val drugBackgroundColor = Color(0xFFD5F2E5)
 val drugBoxColor = Color(0xFFD5D7F2)
 val drugItemNumColor = Color(0xFFBBF2D8)
 
+
+//association
+val associationBackground = Color(0xFFEFF2F8)
+
+val associationIconBackground = Color(0xFF213443)
 
 
 val quizCardColorA = Color(0xFFD3ACFF)

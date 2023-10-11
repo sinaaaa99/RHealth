@@ -1,7 +1,10 @@
 package com.example.rehealth.ui.screens.setting.drugs
 
-import android.util.Log
-import androidx.compose.foundation.ExperimentalFoundationApi
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,13 +20,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -31,7 +30,6 @@ import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,7 +40,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,23 +48,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import com.example.rehealth.R
 import com.example.rehealth.data.interfaces.DrugScheduler
-import com.example.rehealth.data.models.DrugReminder
-import com.example.rehealth.data.models.DrugsClass
+import com.example.rehealth.data.models.drug.DrugReminder
 import com.example.rehealth.ui.theme.buttonColor
-import com.example.rehealth.ui.theme.green31
 import com.example.rehealth.ui.theme.yellow10
 import com.example.rehealth.ui.viewmodel.SharedViewModel
-import com.example.rehealth.util.RequestState
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.clock.ClockDialog
 import com.maxkeppeler.sheets.clock.models.ClockConfig
@@ -76,12 +70,15 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.util.UUID
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddDrugScreen(
+fun AddReminderScreen(
     sharedViewModel: SharedViewModel, drugScheduler: DrugScheduler, navController: NavHostController
 ) {
+
+    val context = LocalContext.current
 
     var drugReminder: DrugReminder?
 
@@ -97,12 +94,15 @@ fun AddDrugScreen(
 
         })
 
-    var timeShiftName by sharedViewModel.timeShiftName
+    LaunchedEffect(key1 = Unit) {
 
-    val drugName by sharedViewModel.drugName
+        sharedViewModel.reminderId.value = UUID.randomUUID()
+        sharedViewModel.alarmId.value = (1..2000000000).random()
 
-    val drugId by sharedViewModel.drugId
+    }
+    val timeShiftName by sharedViewModel.timeShiftName
 
+    val reminderId by sharedViewModel.reminderId
     val alarmId by sharedViewModel.alarmId
 
 
@@ -110,20 +110,15 @@ fun AddDrugScreen(
         mutableStateOf(false)
     }
 
-    var timeShiftCode by sharedViewModel.shiftCode
-    var drugsNumber by sharedViewModel.drugsNumber
-
-    val listOfDrugs by sharedViewModel.drugs.collectAsState()
-
-    var eachDrugId by sharedViewModel.eachDrugId
-
-    LaunchedEffect(key1 = timeShiftCode, key2 = drugName, key3 = eachDrugId) {
-
-        sharedViewModel.getDrugs()
-    }
-
+    val timeShiftCode by sharedViewModel.shiftCode
 
     val scrollable = rememberScrollState()
+
+    val notificationPermissionState = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = {}
+    )
+
 
 
     Column(
@@ -175,6 +170,8 @@ fun AddDrugScreen(
             ) {
 
 
+                Spacer(modifier = Modifier.height(16.dp))
+
                 //Drop down Menu
                 Box(
                     modifier = Modifier
@@ -195,7 +192,7 @@ fun AddDrugScreen(
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedMenu) },
                             placeholder = {
                                 Text(
-                                    text = "لطفا نویت مصرف دارو را انتخاب کنید",
+                                    text = "لطفا نوبت مصرف دارو را انتخاب کنید",
                                     textAlign = TextAlign.Right,
                                     modifier = Modifier.fillMaxWidth(),
                                     style = MaterialTheme.typography.titleMedium
@@ -271,52 +268,6 @@ fun AddDrugScreen(
                 }
 
 
-
-                CustomTextFiled(
-                    drugName, drugsNumber, ({ numberSelectedByUser ->
-                        drugsNumber = numberSelectedByUser
-
-                    }), ({
-                        sharedViewModel.insertDrugs()
-                    })
-                ) { newText ->
-                    sharedViewModel.drugName.value = newText
-
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-
-
-                LazyVerticalStaggeredGrid(
-                    modifier = Modifier.height(150.dp),
-                    columns = StaggeredGridCells.Adaptive(150.dp)
-                ) {
-
-                    if (listOfDrugs is RequestState.Success) {
-
-                        itemsIndexed(
-                            (listOfDrugs as
-                                    RequestState.Success<List<DrugsClass>>).data
-                        ) { _, data ->
-
-
-                            DrugsName(drugsClass = data) {
-
-                                eachDrugId = data.id
-
-                                Log.d("eachDrugId", eachDrugId.toString())
-
-                                sharedViewModel.deleteDrug()
-
-                            }
-
-                        }
-                    }
-
-                }
-
-
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Row(
@@ -333,6 +284,7 @@ fun AddDrugScreen(
                     ) {
 
                         Image(
+                            modifier = Modifier.clickable { clockState.show() },
                             painter = painterResource(id = R.drawable.ic_clock),
                             contentDescription = "ic_calendar visit option"
                         )
@@ -352,6 +304,7 @@ fun AddDrugScreen(
 
 
                 Spacer(modifier = Modifier.height(16.dp))
+
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
 
                     Button(modifier = Modifier
@@ -361,37 +314,57 @@ fun AddDrugScreen(
                         colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
                         onClick = {
 
+                            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
 
-                            Log.d("alarmTimeSet", selectedTime.toString())
+                                val permissionCheekResult =
+                                    ContextCompat.checkSelfPermission(
+                                        context,
+                                        Manifest.permission.POST_NOTIFICATIONS
+                                    )
 
-                            Log.d("alarmIDTEst", alarmId.toString())
+                                if (permissionCheekResult == PackageManager.PERMISSION_GRANTED) {
+                                    drugReminder =
+                                        DrugReminder(
+                                            reminderId,
+                                            alarmId,
+                                            timeShiftName,
+                                            selectedTime,
+                                            timeShiftCode,
+                                            0
+                                        )
 
+                                    drugScheduler.schedule(drugReminder!!)
 
+                                    sharedViewModel.insertDrugReminder()
 
-                            drugReminder =
-                                DrugReminder(
-                                    drugId,
-                                    alarmId,
-                                    timeShiftName,
-                                    selectedTime,
-                                    timeShiftCode,
-                                    0
-                                )
+                                    navController.popBackStack()
 
-                            drugScheduler.schedule(drugReminder!!)
+                                } else
+                                    notificationPermissionState.launch(Manifest.permission.POST_NOTIFICATIONS)
+
+                            } else {
+
+                                drugReminder =
+                                    DrugReminder(
+                                        reminderId,
+                                        alarmId,
+                                        timeShiftName,
+                                        selectedTime,
+                                        timeShiftCode,
+                                        0
+                                    )
+
+                                drugScheduler.schedule(drugReminder!!)
 //                              drugReminder?.let { drugScheduler::schedule }
 
-                            sharedViewModel.insertDrugReminder()
+                                sharedViewModel.insertDrugReminder()
 
-                            /*navController.navigate("DrugOption_Screen") {
-                                popUpTo(navController.graph.id) {
-                                    inclusive = true
-                                }
-                            }*/
-                            navController.popBackStack()
+                                navController.popBackStack()
+                            }
 
 
-                        }) {
+                        })
+                    {
                         Text(
                             text = "ذخیره",
                             style = MaterialTheme.typography.bodyLarge,
@@ -405,142 +378,6 @@ fun AddDrugScreen(
         }
 
     }
-
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CustomTextFiled(
-    text: String,
-    drugsNumber: Int,
-    numberSelected: (Int) -> Unit,
-    clickOnLeadingIcon: () -> Unit,
-    onValueChange: (String) -> Unit
-) {
-
-    var expandedNumbers by remember {
-        mutableStateOf(false)
-    }
-
-    Text(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp),
-        text = "نام دارو",
-        style = MaterialTheme.typography.titleLarge,
-        textAlign = TextAlign.Right
-    )
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-
-        ExposedDropdownMenuBox(modifier = Modifier.weight(2f),
-            expanded = expandedNumbers,
-            onExpandedChange = {
-                expandedNumbers = it
-            })
-        {
-
-            OutlinedTextField(
-                value = drugsNumber.toString(),
-                onValueChange = {},
-                readOnly = true,
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedNumbers) },
-                colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
-                modifier = Modifier
-                    .menuAnchor()
-                    .fillMaxWidth(),
-                textStyle = MaterialTheme.typography.titleMedium
-            )
-            ExposedDropdownMenu(expanded = expandedNumbers,
-                onDismissRequest = { expandedNumbers = false }) {
-
-                DropdownMenuItem(onClick = {
-                    numberSelected(1)
-                    expandedNumbers = false
-                }) {
-                    Text(
-                        text = "1",
-                        textAlign = TextAlign.Right,
-                        modifier = Modifier.fillMaxWidth(),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
-
-                DropdownMenuItem(onClick = {
-                    numberSelected(2)
-                    expandedNumbers = false
-                }) {
-                    Text(
-                        text = "2",
-                        textAlign = TextAlign.Right,
-                        modifier = Modifier.fillMaxWidth(),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
-
-                DropdownMenuItem(onClick = {
-                    numberSelected(3)
-                    expandedNumbers = false
-                }) {
-                    Text(
-                        text = "3",
-                        textAlign = TextAlign.Right,
-                        modifier = Modifier.fillMaxWidth(),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
-                DropdownMenuItem(onClick = {
-                    numberSelected(4)
-                    expandedNumbers = false
-                }) {
-                    Text(
-                        text = "4",
-                        textAlign = TextAlign.Right,
-                        modifier = Modifier.fillMaxWidth(),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
-
-            }
-
-
-        }
-
-        OutlinedTextField(
-            value = text,
-            onValueChange = { onValueChange(it) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(8f),
-            placeholder = {
-                Text(
-                    text = "نام دارو را وارد کنید",
-                    textAlign = TextAlign.Right,
-                    modifier = Modifier.fillMaxWidth(),
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            },
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Done, keyboardType = KeyboardType.Text
-            ),
-            textStyle = MaterialTheme.typography.bodyLarge,
-            leadingIcon = {
-                Icon(
-                    modifier = Modifier.clickable {
-                        clickOnLeadingIcon()
-                    },
-                    imageVector = Icons.Default.Check, contentDescription = "", tint = Color.Green
-                )
-            },
-            singleLine = true
-        )
-    }
-
 
 }
 
@@ -573,31 +410,6 @@ fun CustomReminderStyle(selectedTime: LocalDateTime?, onCalendarClick: () -> Uni
                 modifier = Modifier.padding(8.dp)
             )
         }
-    }
-}
-
-@Composable
-fun DrugsName(drugsClass: DrugsClass, onDeleteClick: () -> Unit) {
-
-    Box(
-        modifier = Modifier
-            .padding(4.dp)
-            .clip(CircleShape)
-            .background(color = green31)
-            .padding(10.dp)
-    ) {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-
-
-            Icon(
-                modifier = Modifier.clickable { onDeleteClick() },
-                imageVector = Icons.Default.Close, contentDescription = "drugs name close icon"
-            )
-
-            Text(text = drugsClass.name, style = MaterialTheme.typography.bodyLarge)
-        }
-
-
     }
 }
 

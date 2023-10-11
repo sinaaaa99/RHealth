@@ -1,6 +1,5 @@
 package com.example.rehealth.data.prepopulate
 
-import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
@@ -21,10 +20,6 @@ class TestAlarmScheduler(private val context: Context) : TestScheduler {
             putExtra("name", testReminder.name)
             putExtra("alarmId", testReminder.alarmId)
         }
-
-        Log.d("notificationsina",testReminder.name)
-        Log.d("notificationsina",testReminder.time.toString())
-        Log.d("notificationsina",testReminder.alarmId.toString())
 
         val alarmTime = testReminder.time.atZone(ZoneId.systemDefault()).toEpochSecond().times(1000)
 

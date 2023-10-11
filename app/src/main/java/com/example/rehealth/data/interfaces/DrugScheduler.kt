@@ -1,6 +1,6 @@
 package com.example.rehealth.data.interfaces
 
-import com.example.rehealth.data.models.DrugReminder
+import com.example.rehealth.data.models.drug.DrugReminder
 
 interface DrugScheduler {
 

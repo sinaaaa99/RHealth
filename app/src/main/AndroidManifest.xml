@@ -7,7 +7,7 @@
 
     <application
         android:name=".ReHealthApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -35,6 +35,7 @@
         <receiver android:name="com.example.rehealth.data.broadcast.VisitAlarmReceiver" />
         <receiver android:name="com.example.rehealth.data.broadcast.DrugAlarmReceiver" />
         <receiver android:name="com.example.rehealth.data.broadcast.TestAlarmReceiver" />
+        <receiver android:name="com.example.rehealth.data.broadcast.QuizAlarmReceiver" />
     </application>
 
 </manifest>

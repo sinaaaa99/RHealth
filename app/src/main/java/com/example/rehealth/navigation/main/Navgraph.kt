@@ -6,9 +6,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.example.rehealth.data.interfaces.VisitScheduler
 import com.example.rehealth.data.interfaces.DrugScheduler
+import com.example.rehealth.data.interfaces.QuizScheduler
 import com.example.rehealth.data.interfaces.TestScheduler
 import com.example.rehealth.navigation.NavigateBetweenScreens
-import com.example.rehealth.navigation.bottombar.bottomBarNavGraph
 import com.example.rehealth.navigation.main.home.homeNavGraph
 import com.example.rehealth.navigation.medicine.medicineNavGraph
 import com.example.rehealth.navigation.setting.settingNavGraph
@@ -20,7 +20,8 @@ fun MainNavGraph(
     sharedViewModel: SharedViewModel,
     visitScheduler: VisitScheduler,
     drugScheduler: DrugScheduler,
-    testScheduler: TestScheduler
+    testScheduler: TestScheduler,
+    quizScheduler: QuizScheduler
 ) {
 
     val navBetScreens = remember(navHostController) {
@@ -34,7 +35,7 @@ fun MainNavGraph(
 
 //        bottomBarNavGraph(navHostController, sharedViewModel)
 
-        homeNavGraph(navHostController,sharedViewModel)
+        homeNavGraph(navHostController, sharedViewModel)
 
 
         medicineNavGraph(navHostController, sharedViewModel)
@@ -46,6 +47,7 @@ fun MainNavGraph(
             visitScheduler,
             drugScheduler,
             testScheduler,
+            quizScheduler,
             navBetScreens.drugListToAdd,
             navBetScreens.testListToAdd,
             navBetScreens.visitListToAdd

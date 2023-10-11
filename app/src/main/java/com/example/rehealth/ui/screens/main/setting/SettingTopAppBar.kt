@@ -1,6 +1,7 @@
 package com.example.rehealth.ui.screens.main.setting
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -18,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.example.rehealth.R
 
 @Composable
-fun SettingTopAppBar() {
+fun SettingTopAppBar(onProfileClick: () -> Unit) {
 
     TopAppBar(
         backgroundColor = Color.White
@@ -30,9 +31,7 @@ fun SettingTopAppBar() {
         ) {
 
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(8f), contentAlignment = Alignment.CenterStart
+                contentAlignment = Alignment.CenterStart
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_setting_menu),
@@ -42,13 +41,13 @@ fun SettingTopAppBar() {
             }
 
 
-            Row(modifier = Modifier.weight(4f), horizontalArrangement = Arrangement.SpaceEvenly) {
-
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_info),
-                    contentDescription = "", tint = Color.Black
-                )
+            Box(
+                contentAlignment = Alignment.CenterStart
+            ) {
                 Image(
+                    modifier = Modifier.padding(horizontal = 6.dp).clickable {
+                        onProfileClick()
+                    },
                     painter = painterResource(id = R.drawable.ic_profile_setting),
                     contentDescription = ""
                 )
@@ -63,5 +62,5 @@ fun SettingTopAppBar() {
 @Preview
 fun SettingTopAppBarPre() {
 
-    SettingTopAppBar()
+//    SettingTopAppBar()
 }

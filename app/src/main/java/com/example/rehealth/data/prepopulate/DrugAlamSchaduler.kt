@@ -4,11 +4,9 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.example.rehealth.data.broadcast.DrugAlarmReceiver
 import com.example.rehealth.data.interfaces.DrugScheduler
-import com.example.rehealth.data.models.DrugReminder
-import com.example.rehealth.ui.viewmodel.SharedViewModel
+import com.example.rehealth.data.models.drug.DrugReminder
 import java.time.ZoneId
 
 class DrugAlamScheduler(
@@ -27,7 +25,7 @@ class DrugAlamScheduler(
             .times(1000)
 
 
-        alarmManager.setInexactRepeating(
+        alarmManager.setRepeating(
             AlarmManager.RTC_WAKEUP,
             alarmTime,
             AlarmManager.INTERVAL_DAY,

@@ -55,10 +55,10 @@ fun CustomBottomBar(navHostController: NavHostController) {
             horizontalArrangement = SpaceBetween,
         ) {
 
-            screensItem.forEach { screensItem ->
+            screensItem.forEach { screenItem ->
 
                 val selected = currentDestination?.hierarchy?.any {
-                    it.route == screensItem.route
+                    it.route == screenItem.route
                 } == true
 
                 val backgroundColor =
@@ -72,8 +72,8 @@ fun CustomBottomBar(navHostController: NavHostController) {
                     .background(backgroundColor)
                     .clickable {
 
-                        navHostController.navigate(screensItem.route) {
-                            popUpTo(navHostController.graph.startDestinationId) {
+                        navHostController.navigate(screenItem.route) {
+                            popUpTo(screensItem[1].route) {
                                 saveState = true
                             }
                             launchSingleTop = true
@@ -88,14 +88,14 @@ fun CustomBottomBar(navHostController: NavHostController) {
                     ) {
 
                         Icon(
-                            painter = painterResource(id = if (selected) screensItem.selectedIcon else screensItem.icon),
+                            painter = painterResource(id = if (selected) screenItem.selectedIcon else screenItem.icon),
                             contentDescription = "bottom nav icon",
                             tint = contentColor
                         )
 
                         AnimatedVisibility(visible = selected) {
 
-                            Text(text = screensItem.title, color = contentColor)
+                            Text(text = screenItem.title, color = contentColor)
                         }
 
                     }

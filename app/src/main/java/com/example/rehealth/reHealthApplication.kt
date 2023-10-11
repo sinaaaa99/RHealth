@@ -35,8 +35,14 @@ class ReHealthApplication : Application() {
             NotificationManager.IMPORTANCE_HIGH
         )
 
+        val quizChannel = NotificationChannel(
+            "QuizId",
+            "Quiz",
+            NotificationManager.IMPORTANCE_HIGH
+        )
 
-        val channels = mutableListOf(visitChannel,drugChannel,testChannel)
+
+        val channels = mutableListOf(visitChannel,drugChannel,testChannel,quizChannel)
 //        notificationManager.createNotificationChannel(channel)
         notificationManager.createNotificationChannels(channels)
     }

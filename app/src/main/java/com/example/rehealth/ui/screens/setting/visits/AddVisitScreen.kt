@@ -1,6 +1,11 @@
 package com.example.rehealth.ui.screens.setting.visits
 
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -44,12 +49,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import com.example.rehealth.R
 import com.example.rehealth.data.interfaces.VisitScheduler
@@ -126,6 +133,12 @@ fun AddVisitScreen(
         })
 
 
+    val context = LocalContext.current
+
+    val notificationPermissionState = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = {}
+    )
 
 
     Column(
@@ -228,24 +241,58 @@ fun AddVisitScreen(
                     alarmCheek = onCheek
                 })) {
 
+                    if (Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
 
-                    visitReminder =
-                        VisitReminder(
-                            visitId,
-                            visitAlarmId,
-                            doctorName,
-                            selectedTime.minusDays(1),
-                            false
-                        )
+                        val permissionCheekResult =
+                            ContextCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.POST_NOTIFICATIONS
+                            )
 
-                    visitScheduler.schedule(visitReminder!!)
+                        if (permissionCheekResult == PackageManager.PERMISSION_GRANTED) {
 
-                    sharedViewModel.insertVisitReminder()
+                            visitReminder =
+                                VisitReminder(
+                                    visitId,
+                                    visitAlarmId,
+                                    doctorName,
+                                    selectedTime.minusDays(1),
+                                    false
+                                )
 
-                    navHostController.popBackStack()
+                            visitScheduler.schedule(visitReminder!!)
+
+                            sharedViewModel.insertVisitReminder()
+
+                            navHostController.popBackStack()
+
+                        } else {
+                            notificationPermissionState.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        }
 
 
-//                    visitReminder?.let(alarmSchedule::schedule)
+                    }
+                    else {
+
+                        visitReminder =
+                            VisitReminder(
+                                visitId,
+                                visitAlarmId,
+                                doctorName,
+                                selectedTime.minusDays(1),
+                                false
+                            )
+
+                        visitScheduler.schedule(visitReminder!!)
+
+                        sharedViewModel.insertVisitReminder()
+
+                        navHostController.popBackStack()
+                    }
+
+
+
+
                 }
 
 

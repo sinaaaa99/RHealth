@@ -1,13 +1,16 @@
 package com.example.rehealth.data.repository
 
 import com.example.rehealth.data.MedicineDao
-import com.example.rehealth.data.models.DrugReminder
-import com.example.rehealth.data.models.DrugsClass
+import com.example.rehealth.data.models.drug.DrugReminder
+import com.example.rehealth.data.models.drug.DrugsClass
 import com.example.rehealth.data.models.MedicineWithSideEffects
 import com.example.rehealth.data.models.Medicines
+import com.example.rehealth.data.models.QuizReminder
 import com.example.rehealth.data.models.SideEffects
 import com.example.rehealth.data.models.TestReminder
+import com.example.rehealth.data.models.UserIdentification
 import com.example.rehealth.data.models.VisitReminder
+import com.example.rehealth.data.models.drug.ReminderWithDrugs
 import com.example.rehealth.data.models.quiz.QuizClass
 import com.example.rehealth.data.models.quiz.QuizResult
 import com.example.rehealth.data.models.quiz.UserAnswer
@@ -44,15 +47,21 @@ class RHRepository @Inject constructor(private val medicineDao: MedicineDao) {
     //Drugs Class.........................
     suspend fun insertDrugs(drugsClass: DrugsClass) = medicineDao.insertDrugs(drugsClass)
 
-    //read drugs
-    fun getDrugs(timeShiftCode: Int): Flow<List<DrugsClass>> =
-        medicineDao.getAllDrugs(timeShiftCode)
+    //read ReminderWithDrugs
+    fun getReminderWithDrugs(reminderId: UUID): Flow<ReminderWithDrugs> =
+        medicineDao.getReminderWithDrugs(reminderId)
+
+    fun getReminderWithDrugsByShift(shiftCode: Int): Flow<ReminderWithDrugs?> =
+        medicineDao.getReminderWithDrugsByShift(shiftCode)
+
+    //getAllDrugsById
+//    fun getAllDrugsById(drugId: UUID): Flow<List<DrugsClass>> = medicineDao.getAllDrugsById(drugId)
 
     //delete one drug
     suspend fun deleteDrug(drugId: Int) = medicineDao.deleteDrug(drugId)
 
     //delete shift Drugs
-    suspend fun deleteShiftDrug(shiftId: UUID) = medicineDao.deleteShiftDrug(shiftId)
+//    suspend fun deleteShiftDrug(shiftId: UUID) = medicineDao.deleteShiftDrug(shiftId)
 
 
     //Tests functions........................
@@ -65,7 +74,7 @@ class RHRepository @Inject constructor(private val medicineDao: MedicineDao) {
     val getAllTests: Flow<List<TestReminder>> = medicineDao.getAllTests()
 
     //delete one test
-    suspend fun deleteTest(testId:UUID) = medicineDao.deleteTest(testId)
+    suspend fun deleteTest(testId: UUID) = medicineDao.deleteTest(testId)
 
 
     // Visit Functions....................................
@@ -76,7 +85,7 @@ class RHRepository @Inject constructor(private val medicineDao: MedicineDao) {
     val getAllVisits: Flow<List<VisitReminder>> = medicineDao.getAllVisitReminder()
 
     //delete one test
-    suspend fun deleteVisit(visitId:UUID) = medicineDao.deleteVisitReminder(visitId)
+    suspend fun deleteVisit(visitId: UUID) = medicineDao.deleteVisitReminder(visitId)
 
 
     //Quiz Functions...................................
@@ -84,17 +93,61 @@ class RHRepository @Inject constructor(private val medicineDao: MedicineDao) {
     suspend fun insertQuiz(quizClass: QuizClass) = medicineDao.insertQuiz(quizClass)
 
     //read Quiz
-    fun getQuiz(type:Int) = medicineDao.getQuiz(type)
+    fun getQuiz(type: Int) = medicineDao.getQuiz(type)
 
     //insert user Answer
     suspend fun insertUserAnswer(userAnswer: UserAnswer) = medicineDao.insertUserAnswer(userAnswer)
 
 
     //Quiz Result for doctor advice
-    suspend fun insertFirstUserCheeks(quizResult: QuizResult)=medicineDao.insertFirstUserCheeks(quizResult)
-    suspend fun updateQuizResult1(userCheek:Int) = medicineDao.updateQuizResult1(userCheek)
-    suspend fun updateQuizResult2(userCheek:Int) = medicineDao.updateQuizResult2(userCheek)
+    suspend fun insertFirstUserCheeks(quizResult: QuizResult) =
+        medicineDao.insertFirstUserCheeks(quizResult)
 
-    val readUserCheeks:Flow<QuizResult> = medicineDao.readQuizCheeks()
+    suspend fun updateQuizResult1(userCheek: Int) = medicineDao.updateQuizResult1(userCheek)
+    suspend fun updateQuizResult2(userCheek: Int) = medicineDao.updateQuizResult2(userCheek)
 
+    val readUserCheeks: Flow<QuizResult> = medicineDao.readQuizCheeks()
+
+    //user Association............................
+
+    //test
+    suspend fun updateTestAssociation(alarmId: Int) =
+        medicineDao.updateTestAssociation(alarmId)
+
+    val getTestAssociation: Flow<Int> = medicineDao.getTestAssociation()
+
+    val getTestSize: Flow<Int> = medicineDao.getTestSize()
+
+    //visit
+    suspend fun updateVisitAssociation(alarmId: Int) =
+        medicineDao.updateVisitAssociation(alarmId)
+
+    val getVisitAssociation: Flow<Int> = medicineDao.getVisitAssociation()
+
+    val getVisitSize: Flow<Int> = medicineDao.getVisitSize()
+
+
+    //drug
+    suspend fun updateDrugAssociation(alarmId: Int) =
+        medicineDao.updateDrugAssociation(alarmId)
+
+    /*suspend fun updateDrugNotification(alarmId: Int) =
+        medicineDao.updateDrugNotification(alarmId)*/
+
+    // Quiz Reminder Functions....................................
+    suspend fun insertQuizReminder(quizReminder: QuizReminder) =
+        medicineDao.insertQuizReminder(quizReminder)
+
+    //read
+    val getAllQuizReminder: Flow<List<QuizReminder>> = medicineDao.getAllQuizReminder()
+
+    //delete one test
+    suspend fun deleteQuizReminder(quizId: Int) = medicineDao.deleteQuizReminder(quizId)
+
+
+    //user Identification
+    suspend fun insertUserIdentification(userIdentification: UserIdentification) =
+        medicineDao.insertUserIdentification(userIdentification)
+
+    val readUserIdentification: Flow<UserIdentification?> = medicineDao.readUserIdentification()
 }

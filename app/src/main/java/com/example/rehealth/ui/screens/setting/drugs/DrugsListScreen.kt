@@ -1,6 +1,6 @@
 package com.example.rehealth.ui.screens.setting.drugs
 
-import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -8,25 +8,24 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
 import com.example.rehealth.data.interfaces.DrugScheduler
-import com.example.rehealth.data.models.DrugReminder
+import com.example.rehealth.data.models.drug.DrugReminder
 import com.example.rehealth.ui.viewmodel.SharedViewModel
 import com.example.rehealth.util.RequestState
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DrugsListScreen(
     sharedViewModel: SharedViewModel,
+    navHostController: NavHostController,
     drugScheduler: DrugScheduler,
     onFABClick: (Int) -> Unit
 ) {
 
     val allDrugs by sharedViewModel.allDrugs.collectAsState()
-    var drugId by sharedViewModel.drugId
-    var alarmId by sharedViewModel.alarmId
 
 
     Scaffold(floatingActionButton = {
@@ -34,7 +33,7 @@ fun DrugsListScreen(
         FloatingActionButton(onFABClick)
     }) {
 
-        LazyColumn {
+        LazyColumn(modifier = Modifier.padding(it)) {
 
             if (allDrugs is RequestState.Success) {
 
@@ -44,16 +43,20 @@ fun DrugsListScreen(
                 ) { _, data ->
 
 
-                    DrugItem(shiftCode = data.shiftCode) {
+                    DrugItem(shiftCode = data.shiftCode, ({
 
-                        drugId = data.drugId
-                        alarmId = data.alarmId
+                        //onTrash Click
+                        sharedViewModel.reminderId.value = data.reminderId
+                        sharedViewModel.alarmId.value = data.alarmId
 
 
                         drugScheduler.cancel(data)
 
                         sharedViewModel.deleteDrugReminder()
-                        sharedViewModel.deleteShiftDrug()
+
+                    })) {
+                        //On card Click
+                        navHostController.navigate("UpdateDrugsList/${data.reminderId}")
 
                     }
 

@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.example.rehealth.R
 
 @Composable
-fun DrugItem(shiftCode: Int, onTrashClick: () -> Unit) {
+fun DrugItem(shiftCode: Int, onTrashClick: () -> Unit, onCardClick: () -> Unit) {
 
     val title = when (shiftCode) {
         1 -> "نوبت صبح"
@@ -38,6 +38,7 @@ fun DrugItem(shiftCode: Int, onTrashClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
+            .clickable { onCardClick() }
     ) {
         Row(
             modifier = Modifier
@@ -53,7 +54,7 @@ fun DrugItem(shiftCode: Int, onTrashClick: () -> Unit) {
                 Image(
                     modifier = Modifier
                         .size(35.dp)
-                        .clickable { onTrashClick()},
+                        .clickable { onTrashClick() },
                     painter = painterResource(id = R.drawable.ic_recyclerbin),
                     contentDescription = "Recycler bin icon"
                 )

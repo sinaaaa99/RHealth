@@ -26,12 +26,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.rehealth.data.models.DrugsClass
+import com.example.rehealth.data.models.drug.DrugReminder
+import com.example.rehealth.data.models.drug.DrugsClass
 import com.example.rehealth.ui.theme.drugBoxColor
 import com.example.rehealth.ui.theme.drugItemNumColor
+import java.time.format.DateTimeFormatter
 
 @Composable
-fun DrugHomeItem(drugsClass: DrugsClass, itemNumber: Int) {
+fun DrugHomeItem(drugsClass: DrugsClass, reminder: DrugReminder, itemNumber: Int) {
 
     Row(
         modifier = Modifier
@@ -95,20 +97,14 @@ fun DrugHomeItem(drugsClass: DrugsClass, itemNumber: Int) {
                     .padding(8.dp), horizontalAlignment = Alignment.End
             ) {
                 Text(
-                    text = when (drugsClass.shiftTime) {
-                        1 -> "شیفت صبح"
-                        2 -> "شیفت ظهر"
-                        3 -> "شیفت عصر"
-                        4 -> "شیفت شب"
-                        else -> ""
-                    },
+                    text = reminder.name,
                     style = MaterialTheme.typography.bodyLarge,
                     color = Color.Gray
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = drugsClass.name,
+                    text = drugsClass.drugName,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -130,7 +126,7 @@ fun DrugHomeItem(drugsClass: DrugsClass, itemNumber: Int) {
 
                         Text(
                             modifier = Modifier.padding(2.dp),
-                            text = "هر نوبت ${drugsClass.drugsNumber} قرص ",
+                            text = "هر نوبت ${drugsClass.drugsNumber} عدد ",
                             style = MaterialTheme.typography.titleSmall
                         )
 
@@ -145,7 +141,7 @@ fun DrugHomeItem(drugsClass: DrugsClass, itemNumber: Int) {
 
                         Text(
                             modifier = Modifier.padding(2.dp),
-                            text = "قبل از غذا",
+                            text = reminder.reminder.format(DateTimeFormatter.ofPattern("hh:mm")),
                             style = MaterialTheme.typography.titleSmall
                         )
 

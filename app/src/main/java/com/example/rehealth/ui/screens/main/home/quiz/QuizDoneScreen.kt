@@ -2,6 +2,8 @@ package com.example.rehealth.ui.screens.main.home.quiz
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,15 +38,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.rehealth.R
 import com.example.rehealth.data.models.quiz.QuizResult
+import com.example.rehealth.navigation.routes.Routes
 import com.example.rehealth.ui.theme.CardColorDone
 import com.example.rehealth.ui.theme.backgroundColorDone
+import com.example.rehealth.ui.theme.green30
 import com.example.rehealth.ui.viewmodel.SharedViewModel
 import com.example.rehealth.util.RequestState
 
 @Composable
-fun DoneScreen(sharedViewModel: SharedViewModel) {
+fun DoneScreen(sharedViewModel: SharedViewModel,navHostController: NavHostController) {
 
     val quizType by sharedViewModel.quizType
 
@@ -82,6 +87,8 @@ fun DoneScreen(sharedViewModel: SharedViewModel) {
                 )
         ) {
 
+            val quizSeries = if (quizType == 1) "سوالات سری اول" else "سوالات سری دوم"
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -90,14 +97,14 @@ fun DoneScreen(sharedViewModel: SharedViewModel) {
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
 
-                Icon(
+                Icon(modifier = Modifier.clickable { navHostController.popBackStack() },
                     imageVector = Icons.Default.KeyboardArrowLeft,
                     contentDescription = "KeyboardArrowLeft quiz screen"
                 )
 
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = if (quizType == 1) "سوالات سری اول" else "سوالات سری دوم",
+                    text = quizSeries,
                     style = MaterialTheme.typography.titleLarge,
                     textAlign = TextAlign.Center
                 )
@@ -122,7 +129,7 @@ fun DoneScreen(sharedViewModel: SharedViewModel) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(12.dp),
-                    text = "شما به همه سوالات امروز پاسخ داده اید.",
+                    text = "شما به همه $quizSeries امروز پاسخ داده اید.",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
@@ -188,6 +195,34 @@ fun DoneScreen(sharedViewModel: SharedViewModel) {
                         painter = painterResource(id = R.drawable.pic_dr_advice),
                         contentDescription = "pic doctor advice home screen"
                     )
+                }
+
+            }
+        }
+
+        if (quizType == 1) {
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+
+                Box(
+                    modifier = Modifier
+                        .border(width = 1.dp, color = green30, RoundedCornerShape(16.dp))
+                        .clickable {
+                            navHostController.navigate("QuestionsScreenRoute/2") {
+                                popUpTo(Routes.QuizHomeScreenRoute) {
+                                    inclusive = true
+                                }
+                            }
+                        }
+                        .padding(12.dp)
+                    ,
+                    contentAlignment = Alignment.Center
+                ) {
+
+                    Text(text = "ادامه سوالات", style = MaterialTheme.typography.titleMedium)
+
                 }
 
             }

@@ -4,11 +4,13 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.rehealth.data.convertor.TimeConvertor
-import com.example.rehealth.data.models.DrugReminder
-import com.example.rehealth.data.models.DrugsClass
+import com.example.rehealth.data.models.drug.DrugReminder
+import com.example.rehealth.data.models.drug.DrugsClass
 import com.example.rehealth.data.models.Medicines
+import com.example.rehealth.data.models.QuizReminder
 import com.example.rehealth.data.models.SideEffects
 import com.example.rehealth.data.models.TestReminder
+import com.example.rehealth.data.models.UserIdentification
 import com.example.rehealth.data.models.VisitReminder
 import com.example.rehealth.data.models.quiz.QuizClass
 import com.example.rehealth.data.models.quiz.QuizResult
@@ -24,7 +26,9 @@ import com.example.rehealth.data.models.quiz.UserAnswer
         VisitReminder::class,
         QuizClass::class,
         UserAnswer::class,
-        QuizResult::class
+        QuizResult::class,
+        QuizReminder::class,
+        UserIdentification::class
     ],
     version = 1,
     exportSchema = false

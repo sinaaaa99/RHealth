@@ -6,6 +6,7 @@ import android.app.TaskStackBuilder
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
 import com.example.rehealth.MainActivity
@@ -25,7 +26,7 @@ class TestAlarmReceiver : BroadcastReceiver() {
 
         context.let { ctx ->
 
-            //open activity
+            //open activity from Notification
             val activityIntent =
                 Intent(
                     Intent.ACTION_VIEW,
@@ -44,9 +45,15 @@ class TestAlarmReceiver : BroadcastReceiver() {
             val notificationManger =
                 ctx.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
+            val testImage = BitmapFactory.decodeResource(
+                ctx.resources,
+                R.drawable.pic_test_set
+            )
+
             val builder =
                 NotificationCompat.Builder(ctx, "TestsId")
-                    .setSmallIcon(R.drawable.ic_home)
+                    .setSmallIcon(R.drawable.ic_bell_hand)
+                    .setLargeIcon(testImage)
                     .setContentTitle(name)
                     .setContentText("یادآور آزمایش $name")
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
