@@ -136,7 +136,7 @@ fun TestHomeItem(testReminder: TestReminder, itemNumber: Int) {
 
                             Text(
                                 modifier = Modifier.padding(2.dp),
-                                text = testReminder.time.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")),
+                                text = testReminder.testInfo,
                                 style = MaterialTheme.typography.titleSmall
                             )
 

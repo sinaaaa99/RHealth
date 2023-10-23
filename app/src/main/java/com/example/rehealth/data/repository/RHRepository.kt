@@ -1,6 +1,7 @@
 package com.example.rehealth.data.repository
 
 import com.example.rehealth.data.MedicineDao
+import com.example.rehealth.data.models.LockClass
 import com.example.rehealth.data.models.drug.DrugReminder
 import com.example.rehealth.data.models.drug.DrugsClass
 import com.example.rehealth.data.models.MedicineWithSideEffects
@@ -11,6 +12,7 @@ import com.example.rehealth.data.models.TestReminder
 import com.example.rehealth.data.models.UserIdentification
 import com.example.rehealth.data.models.VisitReminder
 import com.example.rehealth.data.models.drug.ReminderWithDrugs
+import com.example.rehealth.data.models.quiz.QuizAccess
 import com.example.rehealth.data.models.quiz.QuizClass
 import com.example.rehealth.data.models.quiz.QuizResult
 import com.example.rehealth.data.models.quiz.UserAnswer
@@ -150,4 +152,19 @@ class RHRepository @Inject constructor(private val medicineDao: MedicineDao) {
         medicineDao.insertUserIdentification(userIdentification)
 
     val readUserIdentification: Flow<UserIdentification?> = medicineDao.readUserIdentification()
+
+
+    //Lock fun ...............................
+    suspend fun insertLock(lockClass: LockClass) = medicineDao.insertLock(lockClass)
+
+    /*suspend fun updateLock(password: String, isOpen: Boolean) =
+        medicineDao.updateLock(password)*/
+
+    val getLockPassword: Flow<LockClass?> = medicineDao.getLockPassword()
+
+
+    //QuizAccess fun ...............................
+    suspend fun insertQuizAccess(quizAccess: QuizAccess) = medicineDao.insertQuizAccess(quizAccess)
+
+    fun getQuizAccess(): Flow<List<QuizAccess?>> = medicineDao.getQuizAccess()
 }

@@ -1,6 +1,7 @@
 package com.example.rehealth.ui.screens.main.home.drug
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -22,10 +24,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.rehealth.R
 import com.example.rehealth.data.models.drug.DrugReminder
 import com.example.rehealth.data.models.drug.DrugsClass
 import com.example.rehealth.ui.theme.drugBoxColor
@@ -33,7 +37,12 @@ import com.example.rehealth.ui.theme.drugItemNumColor
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun DrugHomeItem(drugsClass: DrugsClass, reminder: DrugReminder, itemNumber: Int) {
+fun DrugHomeItem(
+    drugsClass: DrugsClass,
+    reminder: DrugReminder,
+    itemNumber: Int,
+    onAdviceClick: () -> Unit
+) {
 
     Row(
         modifier = Modifier
@@ -113,39 +122,71 @@ fun DrugHomeItem(drugsClass: DrugsClass, reminder: DrugReminder, itemNumber: Int
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
 
-                    Box(
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+                        Box(
+                            modifier = Modifier
+                                .background(color = drugBoxColor, shape = CircleShape)
+                                .padding(6.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+
+                            Text(
+                                modifier = Modifier.padding(2.dp),
+                                text = " ${drugsClass.drugsNumber} عدد ",
+                                style = MaterialTheme.typography.titleSmall
+                            )
+
+                        }
+
+                        Box(
+                            modifier = Modifier
+                                .background(color = drugBoxColor, shape = CircleShape)
+                                .padding(6.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+
+                            Text(
+                                modifier = Modifier.padding(2.dp),
+                                text = reminder.reminder.format(DateTimeFormatter.ofPattern("hh:mm")),
+                                style = MaterialTheme.typography.titleSmall
+                            )
+
+                        }
+                    }
+
+                    Row(
                         modifier = Modifier
                             .background(color = drugBoxColor, shape = CircleShape)
-                            .padding(6.dp),
-                        contentAlignment = Alignment.Center
+                            .clickable {
+
+                                onAdviceClick()
+                            }
+                            .padding(vertical = 6.dp, horizontal = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
 
                         Text(
                             modifier = Modifier.padding(2.dp),
-                            text = "هر نوبت ${drugsClass.drugsNumber} عدد ",
+                            text = "توصیه",
                             style = MaterialTheme.typography.titleSmall
                         )
 
-                    }
+                        Spacer(modifier = Modifier.width(4.dp))
 
-                    Box(
-                        modifier = Modifier
-                            .background(color = drugBoxColor, shape = CircleShape)
-                            .padding(6.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-
-                        Text(
-                            modifier = Modifier.padding(2.dp),
-                            text = reminder.reminder.format(DateTimeFormatter.ofPattern("hh:mm")),
-                            style = MaterialTheme.typography.titleSmall
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_advice),
+                            contentDescription = "advice icon"
                         )
-
                     }
+
                 }
             }
 

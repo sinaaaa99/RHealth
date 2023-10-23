@@ -11,7 +11,9 @@ import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
 import com.example.rehealth.MainActivity
 import com.example.rehealth.R
+import com.example.rehealth.navigation.routes.Routes.DrugAlarmId
 import com.example.rehealth.navigation.routes.Routes.DrugNotification
+import com.example.rehealth.navigation.routes.Routes.DrugShiftCode
 import com.example.rehealth.navigation.routes.Routes.Message
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -21,13 +23,15 @@ class DrugAlarmReceiver : BroadcastReceiver() {
 
         val id = intent.getIntExtra("id", 1)
         val name = intent.getStringExtra("name")
+        val shiftCode = intent.getIntExtra("shiftCode",0)
+
 
         context.let { ctx ->
 
             //open activity from Notification
             val activityIntent = Intent(
                 Intent.ACTION_VIEW,
-                "$DrugNotification/$Message=$id".toUri(),
+                "$DrugNotification/$DrugAlarmId=$id/$DrugShiftCode=$shiftCode".toUri(),
                 ctx,
                 MainActivity::class.java
             )

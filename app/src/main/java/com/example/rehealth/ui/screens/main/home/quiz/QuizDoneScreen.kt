@@ -24,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,9 +48,10 @@ import com.example.rehealth.ui.theme.backgroundColorDone
 import com.example.rehealth.ui.theme.green30
 import com.example.rehealth.ui.viewmodel.SharedViewModel
 import com.example.rehealth.util.RequestState
+import java.time.LocalDateTime
 
 @Composable
-fun DoneScreen(sharedViewModel: SharedViewModel,navHostController: NavHostController) {
+fun DoneScreen(sharedViewModel: SharedViewModel, navHostController: NavHostController) {
 
     val quizType by sharedViewModel.quizType
 
@@ -70,6 +72,12 @@ fun DoneScreen(sharedViewModel: SharedViewModel,navHostController: NavHostContro
         }
 
 
+    }
+    LaunchedEffect(key1 = Unit) {
+
+        sharedViewModel.quizAccessId.value = quizType
+        sharedViewModel.quizTakeTime.value = LocalDateTime.now()
+        sharedViewModel.insertQuizAccess()
     }
 
 
@@ -97,7 +105,8 @@ fun DoneScreen(sharedViewModel: SharedViewModel,navHostController: NavHostContro
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
 
-                Icon(modifier = Modifier.clickable { navHostController.popBackStack() },
+                Icon(
+                    modifier = Modifier.clickable { navHostController.popBackStack() },
                     imageVector = Icons.Default.KeyboardArrowLeft,
                     contentDescription = "KeyboardArrowLeft quiz screen"
                 )
@@ -216,8 +225,7 @@ fun DoneScreen(sharedViewModel: SharedViewModel,navHostController: NavHostContro
                                 }
                             }
                         }
-                        .padding(12.dp)
-                    ,
+                        .padding(12.dp),
                     contentAlignment = Alignment.Center
                 ) {
 

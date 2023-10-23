@@ -2,6 +2,7 @@ package com.example.rehealth.ui.screens.main.home.quiz
 
 import android.app.NotificationManager
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +26,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,12 +44,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.rehealth.R
+import com.example.rehealth.data.models.quiz.QuizAccess
 import com.example.rehealth.ui.theme.drugBackgroundColor
 import com.example.rehealth.ui.theme.quizCardColorA
 import com.example.rehealth.ui.theme.quizCardColorB
 import com.example.rehealth.ui.theme.quizIconColorA
 import com.example.rehealth.ui.theme.quizIconColorB
 import com.example.rehealth.ui.viewmodel.SharedViewModel
+import com.example.rehealth.util.RequestState
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 @Composable
 fun QuizHomeScreen(navHostController: NavHostController, sharedViewModel: SharedViewModel) {
@@ -53,6 +64,66 @@ fun QuizHomeScreen(navHostController: NavHostController, sharedViewModel: Shared
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     notificationManger.cancel(sharedViewModel.quizAlarmId.value)
+
+    var isQuizAccess1 by remember {
+        mutableStateOf(true)
+    }
+    var isQuizAccess2 by remember {
+        mutableStateOf(true)
+    }
+    val dateNow =
+        LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond()
+
+    LaunchedEffect(key1 = Unit) {
+        sharedViewModel.getQuizAccess()
+    }
+    val requestQuizAccess by sharedViewModel.quizAccess.collectAsState()
+
+    if (requestQuizAccess is RequestState.Success) {
+
+        val quizAccess = requestQuizAccess as RequestState.Success<List<QuizAccess?>>
+
+        if (quizAccess.data.isNotEmpty()) {
+
+            if (quizAccess.data[0] != null) {
+
+                quizAccess.data[0]?.let { quiz1 ->
+
+                    val lastTake1 =
+                        quiz1.lastTake.atZone(ZoneId.systemDefault()).toEpochSecond()
+
+                    val diff = dateNow.minus(lastTake1).toDouble()
+
+                    val ringCountCalculate1 = diff / 60 / 60 / 24
+
+                    if (ringCountCalculate1 < 1) {
+                        isQuizAccess1 = false
+                    }
+                }
+            }
+
+            if (quizAccess.data.size > 1 && quizAccess.data[1] != null) {
+
+                quizAccess.data[1]?.let { quiz2 ->
+
+                    val lastTake2 =
+                        quiz2.lastTake.atZone(ZoneId.systemDefault()).toEpochSecond()
+
+
+                    val diff = dateNow.minus(lastTake2).toDouble()
+
+                    val ringCountCalculate2 = diff / 60 / 60 / 24
+
+                    if (ringCountCalculate2 < 1) {
+                        isQuizAccess2 = false
+                    }
+                }
+
+            }
+
+        }
+
+    }
 
     Column(
         modifier = Modifier
@@ -90,14 +161,29 @@ fun QuizHomeScreen(navHostController: NavHostController, sharedViewModel: Shared
         QuizMenu(cardColor = quizCardColorA, iconColor = quizIconColorA, "سوالات سری اول") {
 
             //on click listener
-            navHostController.navigate("QuestionsScreenRoute/1")
+
+            if (isQuizAccess1)
+                navHostController.navigate("QuestionsScreenRoute/1")
+            else
+                Toast.makeText(
+                    context,
+                    "شما امروز به سوالات سری اول پاسخ داده اید.",
+                    Toast.LENGTH_SHORT
+                ).show()
 
         }
 
         QuizMenu(cardColor = quizCardColorB, iconColor = quizIconColorB, "سوالات سری دوم") {
 
             //on click listener
-            navHostController.navigate("QuestionsScreenRoute/2")
+            if (isQuizAccess2)
+                navHostController.navigate("QuestionsScreenRoute/2")
+            else
+                Toast.makeText(
+                    context,
+                    "شما امروز به سوالات سری دوم پاسخ داده اید.",
+                    Toast.LENGTH_SHORT
+                ).show()
         }
 
 

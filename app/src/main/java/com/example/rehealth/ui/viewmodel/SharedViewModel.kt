@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.rehealth.data.models.LockClass
 import com.example.rehealth.data.models.drug.DrugReminder
 import com.example.rehealth.data.models.drug.DrugsClass
 import com.example.rehealth.data.models.MedicineWithSideEffects
@@ -13,6 +14,7 @@ import com.example.rehealth.data.models.TestReminder
 import com.example.rehealth.data.models.UserIdentification
 import com.example.rehealth.data.models.VisitReminder
 import com.example.rehealth.data.models.drug.ReminderWithDrugs
+import com.example.rehealth.data.models.quiz.QuizAccess
 import com.example.rehealth.data.models.quiz.QuizClass
 import com.example.rehealth.data.models.quiz.QuizResult
 import com.example.rehealth.data.models.quiz.UserAnswer
@@ -313,6 +315,8 @@ class SharedViewModel @Inject constructor(private val repository: RHRepository) 
 
     val testTimeReminder: MutableState<LocalDateTime> = mutableStateOf(LocalDateTime.now())
 
+    val testInfo: MutableState<String> = mutableStateOf("")
+
     //insert Tests
     fun insertTestsReminder() {
 
@@ -323,7 +327,8 @@ class SharedViewModel @Inject constructor(private val repository: RHRepository) 
                 alarmIdTest.value,
                 testName.value,
                 testTimeReminder.value,
-                false
+                false,
+                testInfo.value
             )
 
             repository.insertTestsReminder(testReminder)
@@ -332,6 +337,7 @@ class SharedViewModel @Inject constructor(private val repository: RHRepository) 
             alarmIdTest.value = (1..2000000000).random()
             testName.value = ""
             testTimeReminder.value = LocalDateTime.now()
+            testInfo.value = ""
 
         }
     }
@@ -378,6 +384,8 @@ class SharedViewModel @Inject constructor(private val repository: RHRepository) 
 
     val visitTimeReminder: MutableState<LocalDateTime> = mutableStateOf(LocalDateTime.now())
 
+    val visitInfo: MutableState<String> = mutableStateOf("")
+
     //insert Visits
     fun insertVisitReminder() {
 
@@ -388,7 +396,8 @@ class SharedViewModel @Inject constructor(private val repository: RHRepository) 
                 alarmIdVisit.value,
                 doctorName.value,
                 visitTimeReminder.value,
-                false
+                false,
+                visitInfo.value
             )
 
             repository.insertVisitsReminder(visitReminder)
@@ -397,6 +406,7 @@ class SharedViewModel @Inject constructor(private val repository: RHRepository) 
             alarmIdVisit.value = (1..2000000000).random()
             doctorName.value = ""
             visitTimeReminder.value = LocalDateTime.now()
+            visitInfo.value = ""
 
         }
     }
@@ -781,9 +791,9 @@ class SharedViewModel @Inject constructor(private val repository: RHRepository) 
         try {
             viewModelScope.launch {
 
-                repository.readUserIdentification.collect { Identify ->
+                repository.readUserIdentification.collect { identify ->
 
-                    _userIdentify.value = RequestState.Success(Identify)
+                    _userIdentify.value = RequestState.Success(identify)
 
 
                 }
@@ -792,6 +802,69 @@ class SharedViewModel @Inject constructor(private val repository: RHRepository) 
 
             _userIdentify.value = RequestState.Error(e)
 
+        }
+    }
+
+
+    //Lock fun .................................................
+    val password: MutableState<String> = mutableStateOf("")
+    val isOpen: MutableState<Boolean> = mutableStateOf(false)
+
+    val isScreenLock: MutableState<Boolean> = mutableStateOf(false)
+
+    fun insertLock() {
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+            val lockClass = LockClass(0, password.value.trim(), isOpen.value)
+
+            repository.insertLock(lockClass)
+        }
+    }
+
+    private val _readLock = MutableStateFlow<RequestState<LockClass?>>(RequestState.Idle)
+    val readLock: StateFlow<RequestState<LockClass?>> = _readLock
+
+    fun getPassword() {
+
+        _readLock.value = RequestState.Loading
+        viewModelScope.launch(Dispatchers.IO) {
+
+            repository.getLockPassword.collect { password ->
+
+                _readLock.value = RequestState.Success(password)
+            }
+        }
+    }
+
+
+    //Quiz Access fun .................................................
+    val quizAccessId: MutableState<Int> = mutableStateOf(0)
+    val quizTakeTime: MutableState<LocalDateTime> = mutableStateOf(LocalDateTime.now())
+
+    fun insertQuizAccess() {
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+            val quizAccess = QuizAccess(quizAccessId.value, quizTakeTime.value)
+
+            repository.insertQuizAccess(quizAccess)
+        }
+    }
+
+    private val _quizAccess = MutableStateFlow<RequestState<List<QuizAccess?>>>(RequestState.Idle)
+    val quizAccess: StateFlow<RequestState<List<QuizAccess?>>> = _quizAccess
+
+    fun getQuizAccess() {
+
+        _quizAccess.value = RequestState.Loading
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+            repository.getQuizAccess().collect { quizAccess ->
+
+                _quizAccess.value = RequestState.Success(quizAccess)
+            }
         }
     }
 

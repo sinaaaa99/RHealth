@@ -2,6 +2,7 @@ package com.example.rehealth.ui.screens.main.home.drug
 
 import android.app.NotificationManager
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +21,7 @@ import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -27,6 +29,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -36,13 +39,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.rehealth.R
+import com.example.rehealth.data.models.drug.DrugsClass
 import com.example.rehealth.data.models.drug.ReminderWithDrugs
+import com.example.rehealth.ui.theme.buttonColor
 import com.example.rehealth.ui.theme.drugBackgroundColor
 import com.example.rehealth.ui.viewmodel.SharedViewModel
 import com.example.rehealth.util.RequestState
@@ -51,10 +58,10 @@ import com.example.rehealth.util.RequestState
 @Composable
 fun DrugHomeScreen(sharedViewModel: SharedViewModel, navHostController: NavHostController) {
 
-    LaunchedEffect(Unit) {
+    /*LaunchedEffect(Unit) {
         sharedViewModel.shiftCode.value = 0
         sharedViewModel.timeShiftName.value = ""
-    }
+    }*/
 
 
     val context = LocalContext.current
@@ -71,6 +78,7 @@ fun DrugHomeScreen(sharedViewModel: SharedViewModel, navHostController: NavHostC
     var expandedMenu by remember {
         mutableStateOf(false)
     }
+
 
     Column(
         modifier = Modifier
@@ -224,6 +232,7 @@ fun DrugHomeScreen(sharedViewModel: SharedViewModel, navHostController: NavHostC
 
         } else {
 
+            Log.d("shiftCodeFromNotify","yes")
             val reminderWithDrugsByShift by sharedViewModel.reminderWithDrugsByShift.collectAsState()
 
             LaunchedEffect(shiftCode) {
@@ -265,7 +274,24 @@ fun DrugHomeScreen(sharedViewModel: SharedViewModel, navHostController: NavHostC
 
                             itemsIndexed(drugs.drugs) { index, data ->
 
-                                DrugHomeItem(data, drugs.reminder, index + 1)
+                                var alertShow by remember {
+                                    mutableStateOf(false)
+                                }
+
+                                DrugHomeItem(data, drugs.reminder, index + 1) {
+
+                                    //on Advice Click
+                                    alertShow = true
+                                }
+
+                                if (alertShow)
+                                    AdviceAlertDialog(
+                                        drugsClass = data,
+                                        onAlertShow = { alertState ->
+
+                                            alertShow = alertState
+                                        })
+
 
                             }
                         }
@@ -312,4 +338,44 @@ fun DrugHomeScreen(sharedViewModel: SharedViewModel, navHostController: NavHostC
             Text(text = "Error ${error.error}")
         }*/
     }
+}
+
+@Composable
+fun AdviceAlertDialog(drugsClass: DrugsClass, onAlertShow: (Boolean) -> Unit) {
+
+
+    AlertDialog(
+        onDismissRequest = { onAlertShow(false) },
+        confirmButton = {
+            TextButton(onClick = { onAlertShow(false) }) {
+                Text(
+                    text = "متوجه شدم",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = buttonColor,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        },
+        title = {
+            Text(
+                text = drugsClass.drugName,
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.Black,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Text(modifier=Modifier.fillMaxWidth(),
+                text = drugsClass.advice,
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.Black,
+            )
+        },
+        icon = {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_advice),
+                contentDescription = "advice icon alert"
+            )
+        }
+    )
 }

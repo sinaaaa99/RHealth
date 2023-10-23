@@ -19,6 +19,7 @@ class DrugAlamScheduler(
         val intent = Intent(context, DrugAlarmReceiver::class.java).apply {
             putExtra("id", drugReminder.alarmId)
             putExtra("name", drugReminder.name)
+            putExtra("shiftCode", drugReminder.shiftCode)
         }
 
         val alarmTime = drugReminder.reminder.atZone(ZoneId.systemDefault()).toEpochSecond()

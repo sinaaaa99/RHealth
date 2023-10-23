@@ -3,6 +3,7 @@ package com.example.rehealth.ui.screens.setting.drugs
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -314,8 +315,9 @@ fun AddReminderScreen(
                         colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
                         onClick = {
 
-                            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 
+                                Log.d("apppermissionsina","here1")
                                 val permissionCheekResult =
                                     ContextCompat.checkSelfPermission(
                                         context,
@@ -323,6 +325,9 @@ fun AddReminderScreen(
                                     )
 
                                 if (permissionCheekResult == PackageManager.PERMISSION_GRANTED) {
+
+                                    Log.d("apppermissionsina","here2")
+
                                     drugReminder =
                                         DrugReminder(
                                             reminderId,
@@ -342,7 +347,10 @@ fun AddReminderScreen(
                                 } else
                                     notificationPermissionState.launch(Manifest.permission.POST_NOTIFICATIONS)
 
-                            } else {
+                            }
+                            else {
+
+                                Log.d("apppermissionsina","here3")
 
                                 drugReminder =
                                     DrugReminder(

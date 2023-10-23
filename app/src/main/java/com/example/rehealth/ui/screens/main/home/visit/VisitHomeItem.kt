@@ -136,7 +136,7 @@ fun VisitHomeItem(visitReminder: VisitReminder, itemNumber: Int) {
 
                             Text(
                                 modifier = Modifier.padding(2.dp),
-                                text = visitReminder.time.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")),
+                                text = visitReminder.visitInfo,
                                 style = MaterialTheme.typography.titleSmall
                             )
 

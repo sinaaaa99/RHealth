@@ -50,6 +50,7 @@ val menuItemColor3 = Color(0xFFddf291)
 val menuItemColor4 = Color(0xFF91f2d7)
 
 val menuCardColor = Color(0xFFe4ecad)
+val menuCardTextColor = Color(0xFF780000)
 
 
 val drugBackgroundColor = Color(0xFFD5F2E5)

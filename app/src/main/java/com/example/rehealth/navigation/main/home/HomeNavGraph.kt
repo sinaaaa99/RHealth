@@ -1,5 +1,6 @@
 package com.example.rehealth.navigation.main.home
 
+import android.util.Log
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -9,8 +10,10 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import com.example.rehealth.navigation.main.ScreensNavItem
+import com.example.rehealth.navigation.routes.Routes.DrugAlarmId
 import com.example.rehealth.navigation.routes.Routes.DrugHomeScreenRoute
 import com.example.rehealth.navigation.routes.Routes.DrugNotification
+import com.example.rehealth.navigation.routes.Routes.DrugShiftCode
 import com.example.rehealth.navigation.routes.Routes.Message
 import com.example.rehealth.navigation.routes.Routes.QuestionDoneScreenRoute
 import com.example.rehealth.navigation.routes.Routes.QuestionsScreenRoute
@@ -55,25 +58,41 @@ fun NavGraphBuilder.homeNavGraph(
 
         composable(ScreensNavItem.Setting.route) {
 
-            SettingScreen(navHostController)
+            SettingScreen(sharedViewModel, navHostController)
         }
 
 
         //items...............................................
         composable(
             DrugHomeScreenRoute,
-            arguments = listOf(navArgument(Message) { type = NavType.StringType }),
+            arguments = listOf(navArgument(DrugAlarmId) { type = NavType.StringType },
+                navArgument(DrugShiftCode) { type = NavType.StringType }
+            ),
             deepLinks = listOf(navDeepLink {
-                uriPattern = "$DrugNotification/$Message={$Message}"
+                uriPattern =
+                    "$DrugNotification/$DrugAlarmId={$DrugAlarmId}/$DrugShiftCode={$DrugShiftCode}"
             })
         ) {
             val argument = it.arguments
-            val drugAlarmId = argument?.getString(Message)
+            val drugAlarmId = argument?.getString(DrugAlarmId)
+            val drugShiftCode = argument?.getString(DrugShiftCode)
 
-            LaunchedEffect(key1 = drugAlarmId) {
+//            Log.d("shiftCodeFromNotify", drugAlarmId.toString())
+            LaunchedEffect(key1 = Unit) {
 
-                if (drugAlarmId != null) {
+                if (drugShiftCode != null && drugAlarmId != null) {
+                    sharedViewModel.shiftCode.value = drugShiftCode.toInt()
+
                     sharedViewModel.drugAlarmId.value = drugAlarmId.toInt()
+
+                    val timeCode = sharedViewModel.shiftCode.value
+                    sharedViewModel.timeShiftName.value = when (timeCode) {
+                        1 -> "نوبت صبح"
+                        2 -> "نوبت ظهر"
+                        3 -> "نوبت عصر"
+                        4 -> "نوبت شب"
+                        else -> ""
+                    }
                     sharedViewModel.updateDrugAssociation()
                 }
             }

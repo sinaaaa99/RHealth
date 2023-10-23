@@ -259,16 +259,15 @@ fun AddTextFiled(
         modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp),
-        text = "نام دارو",
+        text = " دارو",
         style = MaterialTheme.typography.titleLarge,
         textAlign = TextAlign.Right
     )
 
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+            .padding(horizontal = 8.dp)
     ) {
 
 
@@ -276,8 +275,7 @@ fun AddTextFiled(
             value = text,
             onValueChange = { onValueChange(it) },
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(8f),
+                .fillMaxWidth(),
             placeholder = {
                 Text(
                     text = "نام دارو را وارد کنید",
@@ -293,13 +291,14 @@ fun AddTextFiled(
             singleLine = true
         )
 
+        Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
-            modifier = Modifier.weight(2f),
+            modifier = Modifier.fillMaxWidth(),
             value = drugsNumber,
             onValueChange = { onNumberChange(it) },
             placeholder = {
                 Text(
-                    text = "دوز",
+                    text = "تعداد",
                     textAlign = TextAlign.Right,
                     modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.bodyLarge

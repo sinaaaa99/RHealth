@@ -29,7 +29,7 @@ fun NavGraphBuilder.bottomBarNavGraph(
 
         composable(ScreensNavItem.Setting.route) {
 
-            SettingScreen(navHostController)
+            SettingScreen(sharedViewModel, navHostController)
         }
     }
 

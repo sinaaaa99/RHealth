@@ -25,6 +25,7 @@ import com.example.rehealth.ui.screens.setting.visits.AddVisitScreen
 import com.example.rehealth.ui.screens.setting.drugs.AddReminderScreen
 import com.example.rehealth.ui.screens.setting.drugs.DrugsListScreen
 import com.example.rehealth.ui.screens.setting.drugs.UpdateDrugsScreen
+import com.example.rehealth.ui.screens.setting.lock.AddLockScreen
 import com.example.rehealth.ui.screens.setting.quiz.AddQuizAlarmScreen
 import com.example.rehealth.ui.screens.setting.quiz.ListQuizAlarmScreen
 import com.example.rehealth.ui.screens.setting.tests.AddTestScreen
@@ -138,6 +139,12 @@ fun NavGraphBuilder.settingNavGraph(
         composable("UserIdentifyScreen") {
 
             UserIdentifyScreen(sharedViewModel, navHostController)
+        }
+
+        //Lock Screen
+        composable("LockScreen") {
+
+            AddLockScreen(sharedViewModel, navHostController)
         }
     }
 }

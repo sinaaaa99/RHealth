@@ -12,5 +12,6 @@ data class VisitReminder(
     val alarmId:Int,
     val title:String,
     val time: LocalDateTime,
-    val userAssociation:Boolean
+    val userAssociation:Boolean,
+    val visitInfo:String
 )

@@ -53,6 +53,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -95,6 +96,8 @@ fun AddVisitScreen(
 
     val visitId by sharedViewModel.visitId
     val visitAlarmId by sharedViewModel.alarmIdVisit
+
+    val visitInfo by sharedViewModel.visitInfo
 
     var alarmCheek by remember {
         mutableStateOf(true)
@@ -219,6 +222,29 @@ fun AddVisitScreen(
                     textStyle = MaterialTheme.typography.bodyLarge
                 )
 
+                Spacer(modifier = Modifier.height(6.dp))
+
+                OutlinedTextField(
+                    value = visitInfo,
+                    onValueChange = { sharedViewModel.visitInfo.value = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
+                    placeholder = {
+                        Text(
+                            text = "توضیحات",
+                            textAlign = TextAlign.Right,
+                            modifier = Modifier.fillMaxWidth(),
+                            style = MaterialTheme.typography.labelSmall
+                        )
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done,
+                        keyboardType = KeyboardType.Text
+                    ),
+                    textStyle = MaterialTheme.typography.bodyLarge
+                )
+
                 Spacer(modifier = Modifier.height(16.dp))
 
                 CalenderStyle(selectedDate) {
@@ -257,7 +283,8 @@ fun AddVisitScreen(
                                     visitAlarmId,
                                     doctorName,
                                     selectedTime.minusDays(1),
-                                    false
+                                    false,
+                                    visitInfo
                                 )
 
                             visitScheduler.schedule(visitReminder!!)
@@ -271,8 +298,7 @@ fun AddVisitScreen(
                         }
 
 
-                    }
-                    else {
+                    } else {
 
                         visitReminder =
                             VisitReminder(
@@ -280,7 +306,8 @@ fun AddVisitScreen(
                                 visitAlarmId,
                                 doctorName,
                                 selectedTime.minusDays(1),
-                                false
+                                false,
+                                visitInfo
                             )
 
                         visitScheduler.schedule(visitReminder!!)
@@ -289,8 +316,6 @@ fun AddVisitScreen(
 
                         navHostController.popBackStack()
                     }
-
-
 
 
                 }
@@ -385,7 +410,7 @@ fun ClockStyle(selectedTime: LocalDateTime, onClockClick: () -> Unit) {
             .padding(start = 32.dp, top = 16.dp), horizontalAlignment = Alignment.Start
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 8.dp),
+            modifier = Modifier.padding(horizontal = 2.dp),
             horizontalArrangement = Arrangement.Start
         ) {
 

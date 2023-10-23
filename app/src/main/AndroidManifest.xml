@@ -3,11 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools">
 
 
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:name=".ReHealthApplication"
-        android:allowBackup="false"
+        android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -32,10 +37,22 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="com.example.rehealth.data.broadcast.VisitAlarmReceiver" />
-        <receiver android:name="com.example.rehealth.data.broadcast.DrugAlarmReceiver" />
-        <receiver android:name="com.example.rehealth.data.broadcast.TestAlarmReceiver" />
-        <receiver android:name="com.example.rehealth.data.broadcast.QuizAlarmReceiver" />
+        <receiver
+            android:name="com.example.rehealth.data.broadcast.VisitAlarmReceiver"
+            android:enabled="true"
+            android:process=":remote" />
+        <receiver
+            android:name="com.example.rehealth.data.broadcast.DrugAlarmReceiver"
+            android:enabled="true"
+            android:process=":remote" />
+        <receiver
+            android:name="com.example.rehealth.data.broadcast.TestAlarmReceiver"
+            android:enabled="true"
+            android:process=":remote" />
+        <receiver
+            android:name="com.example.rehealth.data.broadcast.QuizAlarmReceiver"
+            android:enabled="true"
+            android:process=":remote" />
     </application>
 
 </manifest>

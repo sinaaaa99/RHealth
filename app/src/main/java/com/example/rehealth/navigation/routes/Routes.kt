@@ -8,6 +8,8 @@ object Routes {
     const val DrugNotification = "https://DrugHomeScreen.com"
     const val QuizNotification = "https://QuizHomeScreen.com"
     const val Message = "Message"
+    const val DrugAlarmId = "DrugAlarmId"
+    const val DrugShiftCode = "DrugShiftCode"
 
 
     //Test
@@ -26,7 +28,7 @@ object Routes {
 
     //Homessss...........................
     const val VisitHomeScreenRoute = "VisitHomeScreenRoute/{$Message}"
-    const val DrugHomeScreenRoute = "DrugHomeScreenRoute/{$Message}"
+    const val DrugHomeScreenRoute = "DrugHomeScreenRoute/{$DrugAlarmId}/{$DrugShiftCode}"
     const val TestHomeScreenRoute = "TestHomeScreenRoute/{$Message}"
     const val QuizHomeScreenRoute = "QuizHomeScreenRoute/{$Message}"
 

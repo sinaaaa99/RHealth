@@ -8,10 +8,11 @@ import java.util.UUID
 @Entity("TestReminder")
 data class TestReminder(
     @PrimaryKey
-    val testId:UUID,
-    val alarmId:Int,
-    val name:String,
-    val time:LocalDateTime,
-    val userAssociation:Boolean
+    val testId: UUID,
+    val alarmId: Int,
+    val name: String,
+    val time: LocalDateTime,
+    val userAssociation: Boolean,
+    val testInfo: String,
 
-)
+    )

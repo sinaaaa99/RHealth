@@ -19,7 +19,11 @@ import androidx.compose.ui.unit.dp
 import com.example.rehealth.R
 
 @Composable
-fun SettingTopAppBar(onProfileClick: () -> Unit) {
+fun SettingTopAppBar(
+    onSettingClick: () -> Unit,
+    onProfileClick: () -> Unit,
+    onResetClick: () -> Unit
+) {
 
     TopAppBar(
         backgroundColor = Color.White
@@ -30,14 +34,32 @@ fun SettingTopAppBar(onProfileClick: () -> Unit) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
 
-            Box(
-                contentAlignment = Alignment.CenterStart
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_setting_menu),
-                    contentDescription = "",
-                    tint = Color.Black
-                )
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Box(
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    Icon(
+                        modifier = Modifier.clickable {
+                            onSettingClick()
+                        },
+                        painter = painterResource(id = R.drawable.ic_setting_menu),
+                        contentDescription = "",
+                        tint = Color.Black
+                    )
+                }
+
+                Box(
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    Image(
+                        modifier = Modifier.clickable {
+                            onResetClick()
+                        },
+                        painter = painterResource(id = R.drawable.ic_reset),
+                        contentDescription = "reset icon"
+                    )
+                }
+
             }
 
 
@@ -45,9 +67,11 @@ fun SettingTopAppBar(onProfileClick: () -> Unit) {
                 contentAlignment = Alignment.CenterStart
             ) {
                 Image(
-                    modifier = Modifier.padding(horizontal = 6.dp).clickable {
-                        onProfileClick()
-                    },
+                    modifier = Modifier
+                        .padding(horizontal = 6.dp)
+                        .clickable {
+                            onProfileClick()
+                        },
                     painter = painterResource(id = R.drawable.ic_profile_setting),
                     contentDescription = ""
                 )

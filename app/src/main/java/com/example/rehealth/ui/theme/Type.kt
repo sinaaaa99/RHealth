@@ -40,6 +40,14 @@ val Typography = Typography(
         letterSpacing = 0.sp,
         textDirection = TextDirection.Rtl
     ),
+    titleSmall = TextStyle(
+        fontFamily = vazir,
+        fontWeight = FontWeight.Normal,
+        fontSize = 14.sp,
+        lineHeight = 26.sp,
+        letterSpacing = 0.sp,
+        textDirection = TextDirection.Rtl
+    ),
     labelSmall = TextStyle(
         fontFamily = vazir,
         fontWeight = FontWeight.Medium,

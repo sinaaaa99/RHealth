@@ -51,6 +51,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -127,6 +128,8 @@ fun AddTestScreen(
 
     val testId by sharedViewModel.testId
     val alarmId by sharedViewModel.alarmIdTest
+
+    val testInfo by sharedViewModel.testInfo
 
     val context = LocalContext.current
 
@@ -213,6 +216,29 @@ fun AddTestScreen(
                     textStyle = MaterialTheme.typography.bodyLarge
                 )
 
+                Spacer(modifier = Modifier.height(6.dp))
+
+                OutlinedTextField(
+                    value = testInfo,
+                    onValueChange = { sharedViewModel.testInfo.value = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
+                    placeholder = {
+                        Text(
+                            text = "توضیحات",
+                            textAlign = TextAlign.Right,
+                            modifier = Modifier.fillMaxWidth(),
+                            style = MaterialTheme.typography.labelSmall
+                        )
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done,
+                        keyboardType = KeyboardType.Text
+                    ),
+                    textStyle = MaterialTheme.typography.bodyLarge
+                )
+
                 Spacer(modifier = Modifier.height(16.dp))
 
                 TestCalenderStyle(selectedDate) {
@@ -246,7 +272,14 @@ fun AddTestScreen(
                         if (permissionCheekResult == PackageManager.PERMISSION_GRANTED) {
 
                             testReminder =
-                                TestReminder(testId, alarmId, testName, selectedTime.minusDays(1), false)
+                                TestReminder(
+                                    testId,
+                                    alarmId,
+                                    testName,
+                                    selectedTime.minusDays(1),
+                                    false,
+                                    testInfo
+                                )
 
                             testScheduler.schedule(testReminder!!)
 
@@ -259,11 +292,17 @@ fun AddTestScreen(
                         }
 
 
-                    }
-                    else {
+                    } else {
 
                         testReminder =
-                            TestReminder(testId, alarmId, testName, selectedTime.minusDays(1), false)
+                            TestReminder(
+                                testId,
+                                alarmId,
+                                testName,
+                                selectedTime.minusDays(1),
+                                false,
+                                testInfo
+                            )
 
                         testScheduler.schedule(testReminder!!)
 
@@ -273,10 +312,7 @@ fun AddTestScreen(
                     }
 
 
-
-
                 }
-
 
 
             }
@@ -368,7 +404,7 @@ fun TestClockStyle(selectedTime: LocalDateTime, onClockClick: () -> Unit) {
             .padding(start = 32.dp, top = 16.dp), horizontalAlignment = Alignment.Start
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 8.dp),
+            modifier = Modifier.padding(horizontal = 2.dp),
             horizontalArrangement = Arrangement.Start
         ) {
 
@@ -376,6 +412,7 @@ fun TestClockStyle(selectedTime: LocalDateTime, onClockClick: () -> Unit) {
             Spacer(modifier = Modifier.width(16.dp))
             Text(text = "دقیقه", style = MaterialTheme.typography.bodyLarge)
         }
+
         Spacer(modifier = Modifier.height(8.dp))
 
         Card(

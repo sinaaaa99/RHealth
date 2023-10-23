@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import com.example.rehealth.data.models.LockClass
 import com.example.rehealth.data.models.drug.DrugReminder
 import com.example.rehealth.data.models.drug.DrugsClass
 import com.example.rehealth.data.models.MedicineWithSideEffects
@@ -15,6 +16,7 @@ import com.example.rehealth.data.models.TestReminder
 import com.example.rehealth.data.models.UserIdentification
 import com.example.rehealth.data.models.VisitReminder
 import com.example.rehealth.data.models.drug.ReminderWithDrugs
+import com.example.rehealth.data.models.quiz.QuizAccess
 import com.example.rehealth.data.models.quiz.QuizClass
 import com.example.rehealth.data.models.quiz.QuizResult
 import com.example.rehealth.data.models.quiz.UserAnswer
@@ -138,6 +140,7 @@ interface MedicineDao {
     fun readQuizCheeks(): Flow<QuizResult>
 
 
+
     //user Association....................................
 
     //test
@@ -187,4 +190,22 @@ interface MedicineDao {
 
     @Query("select * from UserIdentification where id=0")
     fun readUserIdentification(): Flow<UserIdentification?>
+
+    //Lock fun ...............................
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertLock(lockClass: LockClass)
+
+    @Query("update LockClass set password=:password , isLock=1 where id=0")
+    suspend fun updateLock(password: String)
+
+    @Query("select * from LockClass where id=0")
+    fun getLockPassword(): Flow<LockClass?>
+
+
+    //QuizAccess fun ...............................
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertQuizAccess(quizAccess: QuizAccess)
+
+    @Query("select * from QuizAccess")
+    fun getQuizAccess(): Flow<List<QuizAccess?>>
 }

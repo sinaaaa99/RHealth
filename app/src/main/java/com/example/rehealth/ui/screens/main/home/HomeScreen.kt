@@ -13,11 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,10 +31,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.rehealth.R
 import com.example.rehealth.data.models.HomeMenuItemClass
 import com.example.rehealth.data.models.quiz.QuizResult
 import com.example.rehealth.ui.theme.menuCardColor
+import com.example.rehealth.ui.theme.menuCardTextColor
 import com.example.rehealth.ui.theme.menuItemColor1
 import com.example.rehealth.ui.theme.menuItemColor2
 import com.example.rehealth.ui.theme.menuItemColor3
@@ -80,7 +83,7 @@ fun HomeScreen(navHostController: NavHostController, sharedViewModel: SharedView
         )
     )
 
-    LaunchedEffect(key1 = Unit ){
+    LaunchedEffect(key1 = Unit) {
 
         sharedViewModel.getUserCheeks()
     }
@@ -100,6 +103,11 @@ fun HomeScreen(navHostController: NavHostController, sharedViewModel: SharedView
 
     }
 
+    /*val userIdentify by sharedViewModel.userIdentify.collectAsState()
+    LaunchedEffect(key1 = Unit) {
+        sharedViewModel.readUserIdentify()
+    }*/
+
 
     Column(
         modifier = Modifier
@@ -109,7 +117,7 @@ fun HomeScreen(navHostController: NavHostController, sharedViewModel: SharedView
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Row(
+        /*Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
@@ -123,13 +131,27 @@ fun HomeScreen(navHostController: NavHostController, sharedViewModel: SharedView
                 tint = Color.Black
             )
 
-            Text(
-                text = "نمایه سینا ویسی",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-        }
+            if (userIdentify is RequestState.Success) {
+
+                val userData = userIdentify as RequestState.Success<UserIdentification?>
+                if (userData.data != null) {
+                    val userName = userData.data.name
+                    Text(
+                        text = "نمایه $userName",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+                } else {
+                    Text(
+                        text = "نمایه",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+                }
+            }
+        }*/
 
         Card(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 12.dp),
@@ -145,15 +167,25 @@ fun HomeScreen(navHostController: NavHostController, sharedViewModel: SharedView
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .weight(2f)
-                        .padding(8.dp)
                 ) {
 
-                    Image(
-                        painter = painterResource(id = R.drawable.pic_dr_advice),
-                        contentDescription = "pic doctor advice home screen"
-                    )
+                    if (patientState == true) {
+
+                        Box(modifier = Modifier.height(70.dp)){
+
+                            AmbulanceAnimation()
+                        }
+
+                    } else {
+
+                        Image(
+                            painter = painterResource(id = R.drawable.pic_dr_advice),
+                            contentDescription = "pic doctor advice home screen"
+                        )
+
+                    }
                 }
-                Column(modifier = Modifier.weight(8f)) {
+                Column(modifier = Modifier.weight(10f)) {
 
                     Text(
                         modifier = Modifier.fillMaxWidth(),
@@ -170,7 +202,8 @@ fun HomeScreen(navHostController: NavHostController, sharedViewModel: SharedView
                         text = if (patientState == true) "هرچه سریعتر به پزشک خود مراجعه نمایید."
                         else "لطفا داروهای خود را به موقع مصرف نمایید ",
                         style = MaterialTheme.typography.bodyLarge,
-                        color = Color.Black
+                        color = if (patientState == true) menuCardTextColor else Color.Black,
+                        fontWeight = if (patientState == true) FontWeight.Bold else FontWeight.Normal
                     )
 
                 }
@@ -191,7 +224,7 @@ fun HomeScreen(navHostController: NavHostController, sharedViewModel: SharedView
                     when (index) {
 
                         0 -> {
-                            navHostController.navigate("DrugHomeScreenRoute/0")
+                            navHostController.navigate("DrugHomeScreenRoute/0/0")
                         }
 
                         1 -> {
@@ -217,4 +250,16 @@ fun HomeScreen(navHostController: NavHostController, sharedViewModel: SharedView
 
 
     }
+}
+
+@Composable
+fun AmbulanceAnimation() {
+
+    val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.ambulance))
+    val progress by animateLottieCompositionAsState(
+        composition = composition,
+        iterations = LottieConstants.IterateForever
+    )
+
+    LottieAnimation(composition = composition, progress = { progress })
 }
