@@ -11,14 +11,26 @@ import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
 import com.example.rehealth.MainActivity
 import com.example.rehealth.R
+import com.example.rehealth.data.interfaces.QuizScheduler
+import com.example.rehealth.data.models.QuizReminder
+import com.example.rehealth.data.prepopulate.QuizAlarmScheduler
 import com.example.rehealth.navigation.routes.Routes.Message
 import com.example.rehealth.navigation.routes.Routes.QuizNotification
+import java.time.LocalDateTime
 
-class QuizAlarmReceiver:BroadcastReceiver() {
+class QuizAlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
 
         val id = intent.getIntExtra("id", 1)
         val name = intent.getStringExtra("name")
+
+        //new
+        val quizReminderId =
+            intent.getIntExtra("quizId", 0)
+
+
+        val timeReminder: LocalDateTime?
+        timeReminder = intent.getSerializableExtra("timeReminder") as LocalDateTime
 
         context.let { ctx ->
 
@@ -51,11 +63,30 @@ class QuizAlarmReceiver:BroadcastReceiver() {
                 .setSmallIcon(R.drawable.ic_bell_hand)
                 .setLargeIcon(drugImage)
                 .setContentTitle(name)
-                .setContentText("رمان پاسخگویی به پرسشنامه ها")
+                .setContentText("زمان پاسخگویی به پرسشنامه ها")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(pendingActivityIntent)
 
             notificationManager.notify(id, builder.build())
+
+
+            //repeat alarm
+            val quizScheduler: QuizScheduler = QuizAlarmScheduler(context)
+
+            /*val repeatTime =
+                timeReminder.plusDays(1).atZone(ZoneId.systemDefault()).toEpochSecond()
+                    .times(1000)*/
+
+            val quizReminder: QuizReminder?
+
+            quizReminder = QuizReminder(
+                quizReminderId,
+                id,
+                name ?: "",
+                timeReminder.plusDays(1),
+            )
+
+            quizScheduler.repeat(quizReminder)
 
 
         }

@@ -39,20 +39,16 @@
 
         <receiver
             android:name="com.example.rehealth.data.broadcast.VisitAlarmReceiver"
-            android:enabled="true"
-            android:process=":remote" />
+            android:enabled="true" />
         <receiver
             android:name="com.example.rehealth.data.broadcast.DrugAlarmReceiver"
-            android:enabled="true"
-            android:process=":remote" />
+            android:enabled="true"/>
         <receiver
             android:name="com.example.rehealth.data.broadcast.TestAlarmReceiver"
-            android:enabled="true"
-            android:process=":remote" />
+            android:enabled="true" />
         <receiver
             android:name="com.example.rehealth.data.broadcast.QuizAlarmReceiver"
-            android:enabled="true"
-            android:process=":remote" />
+            android:enabled="true" />
     </application>
 
 </manifest>

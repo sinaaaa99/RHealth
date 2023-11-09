@@ -6,4 +6,5 @@ interface QuizScheduler {
 
     fun schedule(quizReminder: QuizReminder)
     fun cancel(quizReminder: QuizReminder)
+    fun repeat(quizReminder: QuizReminder)
 }

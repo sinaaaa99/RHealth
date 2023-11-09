@@ -6,5 +6,5 @@ interface DrugScheduler {
 
     fun schedule(drugReminder: DrugReminder)
     fun cancel(drugReminder: DrugReminder)
-    fun update(drugReminder: DrugReminder)
+    fun repeat(drugReminder: DrugReminder)
 }

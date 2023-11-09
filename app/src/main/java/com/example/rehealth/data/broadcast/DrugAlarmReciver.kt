@@ -7,15 +7,20 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
 import com.example.rehealth.MainActivity
 import com.example.rehealth.R
+import com.example.rehealth.data.interfaces.DrugScheduler
+import com.example.rehealth.data.models.drug.DrugReminder
+import com.example.rehealth.data.prepopulate.DrugAlamScheduler
 import com.example.rehealth.navigation.routes.Routes.DrugAlarmId
 import com.example.rehealth.navigation.routes.Routes.DrugNotification
 import com.example.rehealth.navigation.routes.Routes.DrugShiftCode
-import com.example.rehealth.navigation.routes.Routes.Message
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.LocalDateTime
+import java.util.UUID
 
 @AndroidEntryPoint
 class DrugAlarmReceiver : BroadcastReceiver() {
@@ -23,8 +28,21 @@ class DrugAlarmReceiver : BroadcastReceiver() {
 
         val id = intent.getIntExtra("id", 1)
         val name = intent.getStringExtra("name")
-        val shiftCode = intent.getIntExtra("shiftCode",0)
+        val shiftCode = intent.getIntExtra("shiftCode", 0)
 
+        //new
+        val drugReminderId: UUID?
+        drugReminderId = intent.getSerializableExtra("drugId") as UUID
+//        val drugId = UUID.fromString(drugIdString)
+
+        Log.d("drugIdString", drugReminderId.toString())
+
+        val timeReminder: LocalDateTime?
+//        if (intent.hasExtra("timeReminder"))
+        timeReminder = intent.getSerializableExtra("timeReminder") as LocalDateTime
+
+
+        Log.d("drugIdString", timeReminder.toString())
 
         context.let { ctx ->
 
@@ -62,6 +80,26 @@ class DrugAlarmReceiver : BroadcastReceiver() {
                 .setContentIntent(pendingActivityIntent)
 
             notificationManager.notify(id, builder.build())
+
+
+            //repeat alarm
+            val drugScheduler: DrugScheduler = DrugAlamScheduler(context)
+
+            /*val repeatTime =
+                timeReminder.plusDays(1).atZone(ZoneId.systemDefault()).toEpochSecond()
+                    .times(1000)*/
+
+            val drugReminder: DrugReminder?
+
+            drugReminder = DrugReminder(
+                drugReminderId,
+                id,
+                name ?: "",
+                timeReminder.plusDays(1),
+                shiftCode, 0
+            )
+
+            drugScheduler.repeat(drugReminder)
 
 
         }
